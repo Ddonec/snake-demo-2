@@ -100,6 +100,47 @@ document.onkeydown = (event) => {
     }
 }
 
+// Переменные для хранения координат касания
+let startTouchX, startTouchY, endTouchX, endTouchY;
+
+// Обработчик для фиксации начала свайпа
+document.addEventListener("touchstart", (event) => {
+    startTouchX = event.touches[0].clientX;
+    startTouchY = event.touches[0].clientY;
+}, false);
+
+// Обработчик для фиксации конца свайпа и определения направления
+document.addEventListener("touchend", (event) => {
+    endTouchX = event.changedTouches[0].clientX;
+    endTouchY = event.changedTouches[0].clientY;
+    handleSwipe();
+}, false);
+
+function handleSwipe() {
+    // Если змейка уже изменила направление, ждем следующего свайпа
+    if (!flag) return;
+    flag = 0;
+
+    // Определяем смещения по осям
+    const diffX = Math.abs(endTouchX - startTouchX);
+    const diffY = Math.abs(endTouchY - startTouchY);
+
+    // Проверяем текущее направление змейки
+    const actualDirection = direction;
+
+    // Логика смены направления на основании свайпа
+    if (endTouchX < startTouchX && actualDirection !== 'right' && diffX > diffY) {
+        direction = 'left';
+    } else if (endTouchX > startTouchX && actualDirection !== 'left' && diffX > diffY) {
+        direction = 'right';
+    } else if (endTouchY < startTouchY && actualDirection !== 'down' && diffX < diffY) {
+        direction = 'up';
+    } else if (endTouchY > startTouchY && actualDirection !== 'up' && diffX < diffY) {
+        direction = 'down';
+    }
+}
+
+
 function moveSnake()
 {
     for(i=a1.length-1;i>0;i--)
