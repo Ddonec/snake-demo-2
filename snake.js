@@ -1,7 +1,15 @@
 if(!localStorage.getItem('snake-high-score'))
     localStorage.setItem('snake-high-score','0');
-var row=36,col=56,fr,fc,flag=0,highScore=parseInt(localStorage.getItem('snake-high-score')),currentScore=0;
-var direction = 'right',a1=[row/2,row/2,row/2],a2=[col/2,(col/2)-1,(col/2)-2];
+
+var row = 18;  // Высота поля
+var col = 10;  // Ширина поля
+
+var a1 = [Math.floor(row / 2), Math.floor(row / 2), Math.floor(row / 2)];  // Начальная позиция змейки по строкам
+var a2 = [Math.floor(col / 2), Math.floor(col / 2) - 1, Math.floor(col / 2) - 2];  // Начальная позиция змейки по столбцам
+
+var fr,fc,flag=0,highScore=parseInt(localStorage.getItem('snake-high-score')),currentScore=0;
+var direction = 'right';
+
 
 createContainer();
 
@@ -23,29 +31,35 @@ function placeFood()
     food.className = 'food';
 }
 
-function createContainer()
-{
+function createContainer() {
+    // Отображаем текущий и максимальный счёт
     document.querySelector('.current-score').innerHTML = currentScore;
     document.querySelector('.high-score').innerHTML = highScore;
-    let i,j,container = document.querySelector('.container');
-    for(i=0;i<row;i++)
-    {
-        for(j=0;j<col;j++)
-        {
-            let div = document.createElement('div');
-            div.id = 'c'+i+'-'+j;
+    
+    // Очищаем контейнер перед созданием нового поля
+    let container = document.querySelector('.container');
+    container.innerHTML = '';  // Удаляет старые ячейки
 
+    // Создаем игровое поле с размерами row и col
+    for (let i = 0; i < row; i++) {
+        for (let j = 0; j < col; j++) {
+            let div = document.createElement('div');
+            div.id = 'c' + i + '-' + j;
             div.className = 'cell';
             container.append(div);
         }
     }
-    for(i=0;i<a1.length;i++)
-    {   
-        let div = document.querySelector('#c'+a1[i]+'-'+a2[i]);
+    
+    // Рисуем начальное положение змейки
+    for (let i = 0; i < a1.length; i++) {   
+        let div = document.querySelector('#c' + a1[i] + '-' + a2[i]);
         div.className = 'snake';
     }
+
+    // Размещаем еду
     placeFood();
 }
+
 
 document.onkeydown = (event) => {
     if(flag)
@@ -85,6 +99,47 @@ document.onkeydown = (event) => {
         
     }
 }
+
+// Переменные для хранения координат касания
+let startTouchX, startTouchY, endTouchX, endTouchY;
+
+// Обработчик для фиксации начала свайпа
+document.addEventListener("touchstart", (event) => {
+    startTouchX = event.touches[0].clientX;
+    startTouchY = event.touches[0].clientY;
+}, false);
+
+// Обработчик для фиксации конца свайпа и определения направления
+document.addEventListener("touchend", (event) => {
+    endTouchX = event.changedTouches[0].clientX;
+    endTouchY = event.changedTouches[0].clientY;
+    handleSwipe();
+}, false);
+
+function handleSwipe() {
+    // Если змейка уже изменила направление, ждем следующего свайпа
+    if (!flag) return;
+    flag = 0;
+
+    // Определяем смещения по осям
+    const diffX = Math.abs(endTouchX - startTouchX);
+    const diffY = Math.abs(endTouchY - startTouchY);
+
+    // Проверяем текущее направление змейки
+    const actualDirection = direction;
+
+    // Логика смены направления на основании свайпа
+    if (endTouchX < startTouchX && actualDirection !== 'right' && diffX > diffY) {
+        direction = 'left';
+    } else if (endTouchX > startTouchX && actualDirection !== 'left' && diffX > diffY) {
+        direction = 'right';
+    } else if (endTouchY < startTouchY && actualDirection !== 'down' && diffX < diffY) {
+        direction = 'up';
+    } else if (endTouchY > startTouchY && actualDirection !== 'up' && diffX < diffY) {
+        direction = 'down';
+    }
+}
+
 
 function moveSnake()
 {
@@ -203,7 +258,7 @@ var func = setInterval(() => {
     checkCollision();
     let food = document.querySelector('#c'+fr+'-'+fc);
     food.className = 'food';
-},150)
+},200)
 
 function gameOver()
 {

@@ -4,8 +4,8 @@
 {
     --cellHeight: 12px;
     --cellWidth: 12px;
-    --rows: 36;
-    --columns: 56;
+    --rows: 18;
+    --columns: 10;
 }
 body
 {
