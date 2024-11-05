@@ -11,7 +11,7 @@ var fr,fc,flag=0,highScore=parseInt(localStorage.getItem('snake-high-score')),cu
 var direction = 'right';
 
 
-// createContainer();
+createContainer();
 
 function placeFood()
 {
