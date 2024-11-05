@@ -11,7 +11,7 @@ var fr,fc,flag=0,highScore=parseInt(localStorage.getItem('snake-high-score')),cu
 var direction = 'right';
 
 
-createContainer();
+// createContainer();
 
 function placeFood()
 {
@@ -40,7 +40,6 @@ function createContainer() {
     let container = document.querySelector('.container');
     container.innerHTML = '';  // Удаляет старые ячейки
 
-    // Создаем игровое поле с размерами row и col
     for (let i = 0; i < row; i++) {
         for (let j = 0; j < col; j++) {
             let div = document.createElement('div');
@@ -50,13 +49,11 @@ function createContainer() {
         }
     }
     
-    // Рисуем начальное положение змейки
     for (let i = 0; i < a1.length; i++) {   
         let div = document.querySelector('#c' + a1[i] + '-' + a2[i]);
         div.className = 'snake';
     }
 
-    // Размещаем еду
     placeFood();
 }
 
