@@ -117,6 +117,10 @@ body {
   width: fit-content;
   margin-bottom: 1vh;
 }
+.hello-text {
+  width: 90vw;
+  margin: 0 auto ;
+}
 .hidden {
   display: none;
 }
