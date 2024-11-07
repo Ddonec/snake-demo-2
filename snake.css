@@ -82,7 +82,41 @@ body {
 .header {
   margin-bottom: 20px;
 }
-
+.rules {
+  width: 90vw;
+  margin: 0 auto;
+}
+.main-menu,
+.rules,
+.leaderboard,
+.registration {
+  display: flex;
+  flex-direction: column;
+  gap: 2vh;
+  align-items: center;
+}
+.button-main {
+  width: 90vw;
+  padding: 1vh;
+  margin: auto;
+}
+#registrationForm label {
+  display: flex;
+  flex-direction: column;
+  margin-top: 2vh;
+}
+#registrationForm label input {
+  border-radius: 6px;
+  border: none;
+  height: 5vh;
+}
+.input-tab {
+  padding: 5px 10px;
+  border-radius: 10px;
+  background-color: #feed00;
+  width: fit-content;
+  margin-bottom: 1vh;
+}
 .hidden {
   display: none;
 }

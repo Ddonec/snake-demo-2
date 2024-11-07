@@ -301,5 +301,7 @@ function startGame() {
     document.querySelector('.leaderboard').classList.add('hidden');
     document.querySelector('.registration').classList.add('hidden');
     document.querySelector('.container').classList.remove('hidden');  
+    document.querySelector('.footer').classList.remove('hidden');  
+    document.querySelector('.score').classList.remove('hidden');  
     createContainer();
 }

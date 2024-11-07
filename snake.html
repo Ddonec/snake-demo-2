@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="./snake.css" />
   </head>
   <body>
-    <div class="score">
+    <div class="score hidden">
       <div class="score-div">
         <div>Жизни:</div>
         <div class="lives-score">9</div>
@@ -24,16 +24,20 @@
     </div>
     <div class="game-over">Game Over</div>
     <div class="container hidden"></div>
-    <div class="footer">
+    <div class="footer hidden">
       <div class="play-again" onclick="window.location.reload();">
         Перезапуск
       </div>
     </div>
     <div class="main-menu">
-      <button onclick="showRules()">ПРАВИЛА ИГРЫ</button>
-      <button onclick="showLeaderboard()">РЕЙТИНГ ИГРОКОВ</button>
-      <button onclick="showRegistration()">Зарегистрироваться</button>
-      <button onclick="startGame()">НАЧАТЬ ИГРУ</button>
+      <button class="button-main" onclick="showRules()">ПРАВИЛА ИГРЫ</button>
+      <button class="button-main" onclick="showLeaderboard()">
+        РЕЙТИНГ ИГРОКОВ
+      </button>
+      <button class="button-main" onclick="showRegistration()">
+        Зарегистрироваться
+      </button>
+      <button class="button-main" onclick="startGame()">НАЧАТЬ ИГРУ</button>
     </div>
 
     <div class="rules hidden">
@@ -57,7 +61,7 @@
           в табло игроков.
         </li>
       </ul>
-      <button onclick="showMenu()">Назад</button>
+      <button class="button-main" onclick="showMenu()">Назад</button>
     </div>
 
     <div class="leaderboard hidden">
@@ -69,16 +73,40 @@
           <th>Очки</th>
         </tr>
       </table>
-      <button onclick="showMenu()">Назад</button>
+      <button class="button-main" onclick="showMenu()">Назад</button>
     </div>
 
     <div class="registration hidden">
       <h2>Регистрация</h2>
       <form id="registrationForm">
-        <label>Имя: <input type="text" name="name" required /></label><br />
-        <label>Фамилия: <input type="text" name="surname" required /></label
-        ><br />
-        <button type="button" onclick="startGame()">Начать игру</button>
+        <label
+          ><span class="input-tab">Никнейм:</span
+          ><input type="text" name="nickname" required
+        /></label>
+        <label
+          ><span class="input-tab">Имя:</span
+          ><input type="text" name="name" required
+        /></label>
+        <label
+          ><span class="input-tab">Фамилия:</span
+          ><input type="text" name="surname" required
+        /></label>
+        <label
+          ><span class="input-tab">Телефон:</span
+          ><input type="tel" name="tel" required
+        /></label>
+        <label
+          ><span class="input-tab">Профессия:</span
+          ><input type="text" name="profession" required
+        /></label>
+        <label
+          ><span class="input-tab">E-mail:</span
+          ><input type="email" name="email" required
+        /></label>
+        <br />
+        <button class="button-main" type="button" onclick="startGame()">
+          Начать игру
+        </button>
       </form>
     </div>
   </body>
