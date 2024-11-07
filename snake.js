@@ -35,13 +35,11 @@ function placeFood() {
 }
 
 function createContainer() {
-    // Отображаем текущий и максимальный счёт
     document.querySelector('.current-score').innerHTML = currentScore;
     document.querySelector('.high-score').innerHTML = highScore;
-    
-    // Очищаем контейнер перед созданием нового поля
+
     let container = document.querySelector('.container');
-    container.innerHTML = '';  // Удаляет старые ячейки
+    container.innerHTML = '';
 
     for (let i = 0; i < row; i++) {
         for (let j = 0; j < col; j++) {
@@ -51,14 +49,71 @@ function createContainer() {
             container.append(div);
         }
     }
-    
-    for (let i = 0; i < a1.length; i++) {   
-        let div = document.querySelector('#c' + a1[i] + '-' + a2[i]);
-        div.className = 'snake';
-    }
 
+    renderSnake();
     placeFood();
 }
+
+function renderSnake() {
+    for (let i = 0; i < a1.length; i++) {
+        let cell = document.querySelector(`#c${a1[i]}-${a2[i]}`);
+        
+        if (cell) { // Проверка на существование элемента
+            cell.innerHTML = ''; // Очищаем содержимое ячейки
+
+            let img = document.createElement('img');
+            img.classList.add('snake-part');
+
+            // Устанавливаем изображения головы, хвоста и тела с учетом поворота
+            if (i === 0) { // Голова змейки
+                img.src = 'assets/snake/snakefront.svg';
+                img.classList.add(getRotationClass(direction));
+            } else if (i === a1.length - 1) { // Хвост змейки
+                img.src = 'assets/snake/snakeback.svg';
+                img.classList.add(getRotationClass(getTailDirection()));
+            } else { // Части тела змейки
+                img.src = (i % 2 === 0) ? 'assets/snake/snakebody1.svg' : 'assets/snake/snakebody2.svg';
+            }
+
+            cell.appendChild(img);
+        }
+    }
+}
+
+
+
+function getRotationClass(direction) {
+    switch (direction) {
+        case 'right': return 'rotate-0';
+        case 'down': return 'rotate-90';
+        case 'left': return 'rotate-180';
+        case 'up': return 'rotate-270';
+    }
+}
+
+function getTailDirection() {
+    if (a2[a2.length - 1] < a2[a2.length - 2]) return 'right';
+    if (a2[a2.length - 1] > a2[a2.length - 2]) return 'left';
+    if (a1[a1.length - 1] < a1[a1.length - 2]) return 'down';
+    return 'up';
+}
+
+function moveSnake() {
+    for (let i = a1.length - 1; i > 0; i--) {
+        a1[i] = a1[i - 1];
+        a2[i] = a2[i - 1];
+    }
+
+    switch (direction) {
+        case 'left': a2[0] = a2[0] === 0 ? col - 1 : a2[0] - 1; break;
+        case 'right': a2[0] = (a2[0] + 1) % col; break;
+        case 'up': a1[0] = a1[0] === 0 ? row - 1 : a1[0] - 1; break;
+        case 'down': a1[0] = (a1[0] + 1) % row; break;
+    }
+
+    renderSnake();
+}
+
 
 
 document.onkeydown = (event) => {
@@ -219,11 +274,12 @@ function checkCollision()
 var func = setInterval(() => {
     flag = 1;
 
+    // Очищаем все ячейки перед обновлением позиции змейки
     for (let i = 0; i < row; i++) {
         for (let j = 0; j < col; j++) {
             let cell = document.querySelector('#c' + i + '-' + j);
             if (cell) {
-                cell.className = 'cell'; // Очистка ячеек
+                cell.innerHTML = ''; // Удаляем все содержимое, включая картинки
             }
         }
     }
@@ -232,25 +288,44 @@ var func = setInterval(() => {
 
     if (a1[0] === fr && a2[0] === fc) {
         currentScore++;
+        
+        // Удаляем класс 'food' из ячейки, где была еда
+        let eatenFoodCell = document.querySelector('#c' + fr + '-' + fc);
+        if (eatenFoodCell) {
+            eatenFoodCell.classList.remove('food');
+            eatenFoodCell.classList.add('cell');
+            eatenFoodCell.innerHTML = ''; // Удаляем изображение еды
+        }
+    
         placeFood();
         document.querySelector('.current-score').innerHTML = currentScore;
         addTail();
     }
 
-    for (let i = 0; i < a1.length; i++) {
-        let cell = document.querySelector('#c' + a1[i] + '-' + a2[i]);
-        if (cell) {
-            cell.className = 'snake';
-        }
+    if (a1[0] === fr && a2[0] === fc) {
+        currentScore++;
+        placeFood();
+        document.querySelector('.current-score').innerHTML = currentScore;
+        addTail();
     }
+
+    // Перерисовываем змейку, используя только SVG-картинки
+    renderSnake();
 
     checkCollision();
 
+    // Устанавливаем изображение еды
     let foodCell = document.querySelector('#c' + fr + '-' + fc);
     if (foodCell) {
-        foodCell.className = 'food';
+        foodCell.innerHTML = ''; // Очищаем ячейку перед добавлением новой еды
+        let foodImg = document.createElement('img');
+        foodImg.src = 'assets/snake/food.svg';
+        foodImg.classList.add('food');
+        foodCell.appendChild(foodImg);
     }
+
 }, 200);
+
 
 
 function gameOver()

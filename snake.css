@@ -34,6 +34,12 @@ body {
   background-color: black;
   /* border: 0.01px gray solid; */
 }
+.cell img,
+.snake img,
+.food img {
+  width: 30px;
+  height: 30px;
+}
 .snake {
   border: 0.5px solid rgba(0, 0, 0, 0.7);
   border-radius: 0%;
@@ -119,8 +125,21 @@ body {
 }
 .hello-text {
   width: 90vw;
-  margin: 0 auto ;
+  margin: 0 auto;
 }
+.rotate-0 {
+  transform: rotate(0deg);
+}
+.rotate-90 {
+  transform: rotate(90deg);
+}
+.rotate-180 {
+  transform: rotate(180deg);
+}
+.rotate-270 {
+  transform: rotate(270deg);
+}
+
 .hidden {
   display: none;
 }
