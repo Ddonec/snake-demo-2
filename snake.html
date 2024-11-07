@@ -22,7 +22,24 @@
         <div class="high-score"></div>
       </div>
     </div>
-    <div class="game-over">Game Over</div>
+    <div class="game-over" style="display: none">
+      <h1>Игра окончена!</h1>
+      <p>Ваш счёт: <span class="final-score"></span></p>
+    </div>
+    <div class="leaderboard hidden">
+      Сосать
+      <table class="leaderboard-table">
+        <thead>
+          <tr>
+            <th>Место</th>
+            <th>Игрок</th>
+            <th>Очки</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <button class="button-main" onclick="showMenu()">Назад</button>
+    </div>
     <div class="container hidden"></div>
     <div class="hello-text">
       Электроустановочные изделия Forte&Piano не имеют рамок и могут собираться
@@ -66,18 +83,6 @@
           в табло игроков.
         </li>
       </ul>
-      <button class="button-main" onclick="showMenu()">Назад</button>
-    </div>
-
-    <div class="leaderboard hidden">
-      <h2>Таблица лидеров</h2>
-      <table>
-        <!-- Тут можно динамически заполнить таблицу с данными -->
-        <tr>
-          <th>Игрок</th>
-          <th>Очки</th>
-        </tr>
-      </table>
       <button class="button-main" onclick="showMenu()">Назад</button>
     </div>
 

@@ -10,6 +10,11 @@ var a2 = [Math.floor(col / 2), Math.floor(col / 2) - 1, Math.floor(col / 2) - 2]
 var fr,fc,flag=0,highScore=parseInt(localStorage.getItem('snake-high-score')),currentScore=0;
 var direction = 'right';
 
+let leaderboardData = [
+    { name: 'Игрок 1', score: 100 },
+    { name: 'Игрок 2', score: 50 },
+    { name: 'Игрок 3', score: 10 }
+];
 
 
 function placeFood() {
@@ -328,17 +333,48 @@ var func = setInterval(() => {
 
 
 
-function gameOver()
-{
+function gameOver() {
     let container = document.querySelector('.container');
-    container.style.display = "none";
-    let div = document.querySelector('.game-over');
-    div.style.display = "block";
-    if(currentScore>highScore)
-    {
-        document.querySelector('.high-score').innerHTML = currentScore;
-        localStorage.setItem('snake-high-score',currentScore)
+    if (container) {
+        container.style.display = "none";
+    } else {
+        console.error("Container not found!");
     }
+    
+    let div = document.querySelector('.game-over');
+    if (div) {
+        div.style.display = "block";
+        // Обновление финального счёта
+        document.querySelector('.final-score').innerText = currentScore;
+    } else {
+        console.error("Game Over element not found!");
+    }
+
+    // Проверяем, если текущий счёт больше высокого, обновляем его
+    if(currentScore > highScore) {
+        document.querySelector('.high-score').innerHTML = currentScore;
+        localStorage.setItem('snake-high-score', currentScore);
+    }
+
+    // Обновляем таблицу лидеров
+    updateLeaderboard('Игрок', currentScore);
+}
+
+function updateLeaderboard(name, score) {
+    // Загружаем текущие данные лидеров
+    let leaderboardData = JSON.parse(localStorage.getItem('leaderboard')) || [];
+
+    // Добавляем новый результат в массив
+    leaderboardData.push({ name: name, score: score });
+
+    // Сортируем по убыванию (по полю score)
+    leaderboardData.sort((a, b) => b.score - a.score);
+
+    // Ограничиваем количество записей (например, 5 лучших)
+    leaderboardData = leaderboardData.slice(0, 5);
+
+    // Сохраняем обновлённые данные в localStorage
+    localStorage.setItem('leaderboard', JSON.stringify(leaderboardData));
 }
 
 
@@ -362,11 +398,32 @@ function showRules() {
 }
 
 function showLeaderboard() {
+    console.log("Showing leaderboard...");
+    
     document.querySelector('.main-menu').classList.add('hidden');
     document.querySelector('.hello-text').classList.add('hidden');
     document.querySelector('.leaderboard').classList.remove('hidden');
-    // Здесь можно заполнить таблицу лидеров из localStorage или базы данных
+    
+    const leaderboardData = JSON.parse(localStorage.getItem('leaderboard')) || [];
+    const leaderboardTable = document.querySelector('.leaderboard-table');
+
+    leaderboardTable.innerHTML = '';
+    
+    leaderboardData.forEach((entry, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${entry.name}</td>
+            <td>${entry.score}</td>
+        `;
+        leaderboardTable.appendChild(row);
+    });
+
+    console.log("Leaderboard shown.");
 }
+
+
+
 
 function showRegistration() {
     document.querySelector('.main-menu').classList.add('hidden');
