@@ -21,7 +21,6 @@ body {
   align-content: center;
   overflow: hidden;
   font-family: "Wix Madefor Display", sans-serif;
-
 }
 
 .container {
@@ -34,6 +33,12 @@ body {
   border-radius: 5%;
   background-color: black;
   /* border: 0.01px gray solid; */
+}
+.cell img,
+.snake img,
+.food img {
+  width: 30px;
+  height: 30px;
 }
 .snake {
   border: 0.5px solid rgba(0, 0, 0, 0.7);
@@ -82,4 +87,59 @@ body {
 }
 .header {
   margin-bottom: 20px;
+}
+.rules {
+  width: 90vw;
+  margin: 0 auto;
+}
+.main-menu,
+.rules,
+.leaderboard,
+.registration {
+  display: flex;
+  flex-direction: column;
+  gap: 2vh;
+  align-items: center;
+}
+.button-main {
+  width: 90vw;
+  padding: 1vh;
+  margin: auto;
+}
+#registrationForm label {
+  display: flex;
+  flex-direction: column;
+  margin-top: 2vh;
+}
+#registrationForm label input {
+  border-radius: 6px;
+  border: none;
+  height: 5vh;
+}
+.input-tab {
+  padding: 5px 10px;
+  border-radius: 10px;
+  background-color: #feed00;
+  width: fit-content;
+  margin-bottom: 1vh;
+}
+.hello-text {
+  width: 90vw;
+  margin: 0 auto;
+}
+.rotate-0 {
+  transform: rotate(0deg);
+}
+.rotate-90 {
+  transform: rotate(90deg);
+}
+.rotate-180 {
+  transform: rotate(180deg);
+}
+.rotate-270 {
+  transform: rotate(270deg);
+}
+
+.hidden {
+  display: none;
 }

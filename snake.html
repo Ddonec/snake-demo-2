@@ -8,11 +8,11 @@
     <link rel="stylesheet" href="./snake.css" />
   </head>
   <body>
-    <div class="score">
-        <div class="score-div">
-            <div>Жизни:</div>
-            <div class="lives-score">9</div>
-          </div>
+    <div class="score hidden">
+      <div class="score-div">
+        <div>Жизни:</div>
+        <div class="lives-score">9</div>
+      </div>
       <div class="score-div">
         <div>Баллы:</div>
         <div class="current-score"></div>
@@ -23,11 +23,96 @@
       </div>
     </div>
     <div class="game-over">Game Over</div>
-    <div class="container"></div>
-    <div class="footer">
+    <div class="container hidden"></div>
+    <div class="hello-text">
+      Электроустановочные изделия Forte&Piano не имеют рамок и могут собираться
+      в бесконечный ряд при стандартном шаге подрозетника 71мм. Собери
+      максимально длинную змейку!
+    </div>
+    <div class="footer hidden">
       <div class="play-again" onclick="window.location.reload();">
         Перезапуск
       </div>
+    </div>
+    <div class="main-menu">
+      <button class="button-main" onclick="showRules()">ПРАВИЛА ИГРЫ</button>
+      <button class="button-main" onclick="showLeaderboard()">
+        РЕЙТИНГ ИГРОКОВ
+      </button>
+      <button class="button-main" onclick="showRegistration()">
+        Зарегистрироваться
+      </button>
+      <button class="button-main" onclick="startGame()">НАЧАТЬ ИГРУ</button>
+    </div>
+
+    <div class="rules hidden">
+      <p>
+        Цель игры – собрать максимально длинную змейку из Forte&Piano, набрав
+        максимальное количество очков!
+      </p>
+      <ul>
+        <li>
+          Управляй стрелками головой растущей змейки, собирая всплывающие
+          изделия.
+        </li>
+        <li>
+          Избегай столкновения с собственным телом и краями поля. При
+          столкновении жизнь обрывается.
+        </li>
+        <li>Всего у тебя 9 жизней.</li>
+        <li>За каждое собранное изделие тебе начисляются очки.</li>
+        <li>
+          Очки, набранные тобой за все жизни, суммируются, формируя твой рейтинг
+          в табло игроков.
+        </li>
+      </ul>
+      <button class="button-main" onclick="showMenu()">Назад</button>
+    </div>
+
+    <div class="leaderboard hidden">
+      <h2>Таблица лидеров</h2>
+      <table>
+        <!-- Тут можно динамически заполнить таблицу с данными -->
+        <tr>
+          <th>Игрок</th>
+          <th>Очки</th>
+        </tr>
+      </table>
+      <button class="button-main" onclick="showMenu()">Назад</button>
+    </div>
+
+    <div class="registration hidden">
+      <h2>Регистрация</h2>
+      <form id="registrationForm">
+        <label
+          ><span class="input-tab">Никнейм:</span
+          ><input type="text" name="nickname" required
+        /></label>
+        <label
+          ><span class="input-tab">Имя:</span
+          ><input type="text" name="name" required
+        /></label>
+        <label
+          ><span class="input-tab">Фамилия:</span
+          ><input type="text" name="surname" required
+        /></label>
+        <label
+          ><span class="input-tab">Телефон:</span
+          ><input type="tel" name="tel" required
+        /></label>
+        <label
+          ><span class="input-tab">Профессия:</span
+          ><input type="text" name="profession" required
+        /></label>
+        <label
+          ><span class="input-tab">E-mail:</span
+          ><input type="email" name="email" required
+        /></label>
+        <br />
+        <button class="button-main" type="button" onclick="startGame()">
+          Начать игру
+        </button>
+      </form>
     </div>
   </body>
   <script src="./snake.js"></script>
