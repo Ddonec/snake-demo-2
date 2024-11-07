@@ -11,24 +11,27 @@ var fr,fc,flag=0,highScore=parseInt(localStorage.getItem('snake-high-score')),cu
 var direction = 'right';
 
 
-createContainer();
 
-function placeFood()
-{
-    while(1)
-    {
-        fr=Math.floor(Math.random()*row);
-        fc=Math.floor(Math.random()*col);
-        for(i=0;i<a1.length;i++)
-        {
-            if(a1[i] == fr && a2[i]== fc)
+function placeFood() {
+    while (true) {
+        fr = Math.floor(Math.random() * row);
+        fc = Math.floor(Math.random() * col);
+        
+        let occupied = false;
+        for (let i = 0; i < a1.length; i++) {
+            if (a1[i] === fr && a2[i] === fc) {
+                occupied = true;
                 break;
+            }
         }
-        if(i == a1.length)
-            break;
+
+        if (!occupied) break;
     }
-    let food = document.querySelector('#c'+fr+'-'+fc);
-    food.className = 'food';
+
+    let food = document.querySelector('#c' + fr + '-' + fc);
+    if (food) {
+        food.className = 'food';
+    }
 }
 
 function createContainer() {
@@ -138,36 +141,22 @@ function handleSwipe() {
 }
 
 
-function moveSnake()
-{
-    for(i=a1.length-1;i>0;i--)
-    {
-        a1[i] = a1[i-1];
-        a2[i] = a2[i-1];
+function moveSnake() {
+    for (let i = a1.length - 1; i > 0; i--) {
+        a1[i] = a1[i - 1];
+        a2[i] = a2[i - 1];
     }
-    if(direction == 'left')
-    {
-        if(a2[0] == 0)
-            a2[0] = col-1;
-        else
-            a2[0] -= 1;
-    }
-    else if(direction =='right')
-    {
-        a2[0] = (a2[0]+1)%col;
-    }
-    else if(direction =='up')
-    {
-        if(a1[0] == 0)
-            a1[0] = row-1;
-        else
-            a1[0] -= 1; 
-    }
-    else if(direction =='down')
-    {
-        a1[0] = (a1[0]+1)%row;
+    if (direction === 'left') {
+        a2[0] = (a2[0] === 0) ? col - 1 : a2[0] - 1;
+    } else if (direction === 'right') {
+        a2[0] = (a2[0] + 1) % col;
+    } else if (direction === 'up') {
+        a1[0] = (a1[0] === 0) ? row - 1 : a1[0] - 1;
+    } else if (direction === 'down') {
+        a1[0] = (a1[0] + 1) % row;
     }
 }
+
 
 function addTail()
 {
@@ -229,33 +218,40 @@ function checkCollision()
 
 var func = setInterval(() => {
     flag = 1;
-    let i,j;
-    for(i=0;i<row;i++)
-    {
-        for(j=0;j<col;j++)
-        {
-            let div = document.querySelector('#c'+i+'-'+j);
-            div.className = 'cell';
+
+    for (let i = 0; i < row; i++) {
+        for (let j = 0; j < col; j++) {
+            let cell = document.querySelector('#c' + i + '-' + j);
+            if (cell) {
+                cell.className = 'cell'; // Очистка ячеек
+            }
         }
     }
+
     moveSnake();
-    
-    if(a1[0] == fr && a2[0] == fc)
-    {
+
+    if (a1[0] === fr && a2[0] === fc) {
         currentScore++;
         placeFood();
         document.querySelector('.current-score').innerHTML = currentScore;
         addTail();
     }
-    for(i=0;i<a1.length;i++)
-    {   
-        let div = document.querySelector('#c'+a1[i]+'-'+a2[i]);
-        div.className = 'snake';
+
+    for (let i = 0; i < a1.length; i++) {
+        let cell = document.querySelector('#c' + a1[i] + '-' + a2[i]);
+        if (cell) {
+            cell.className = 'snake';
+        }
     }
+
     checkCollision();
-    let food = document.querySelector('#c'+fr+'-'+fc);
-    food.className = 'food';
-},200)
+
+    let foodCell = document.querySelector('#c' + fr + '-' + fc);
+    if (foodCell) {
+        foodCell.className = 'food';
+    }
+}, 200);
+
 
 function gameOver()
 {
@@ -268,4 +264,42 @@ function gameOver()
         document.querySelector('.high-score').innerHTML = currentScore;
         localStorage.setItem('snake-high-score',currentScore)
     }
+}
+
+
+
+
+
+
+
+function showMenu() {
+    document.querySelector('.main-menu').classList.remove('hidden');
+    document.querySelector('.rules').classList.add('hidden');
+    document.querySelector('.leaderboard').classList.add('hidden');
+    document.querySelector('.registration').classList.add('hidden');
+}
+
+function showRules() {
+    document.querySelector('.main-menu').classList.add('hidden');
+    document.querySelector('.rules').classList.remove('hidden');
+}
+
+function showLeaderboard() {
+    document.querySelector('.main-menu').classList.add('hidden');
+    document.querySelector('.leaderboard').classList.remove('hidden');
+    // Здесь можно заполнить таблицу лидеров из localStorage или базы данных
+}
+
+function showRegistration() {
+    document.querySelector('.main-menu').classList.add('hidden');
+    document.querySelector('.registration').classList.remove('hidden');
+}
+
+function startGame() {
+    document.querySelector('.main-menu').classList.add('hidden');
+    document.querySelector('.rules').classList.add('hidden');
+    document.querySelector('.leaderboard').classList.add('hidden');
+    document.querySelector('.registration').classList.add('hidden');
+    document.querySelector('.container').classList.remove('hidden');  
+    createContainer();
 }

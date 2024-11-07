@@ -21,7 +21,6 @@ body {
   align-content: center;
   overflow: hidden;
   font-family: "Wix Madefor Display", sans-serif;
-
 }
 
 .container {
@@ -82,4 +81,8 @@ body {
 }
 .header {
   margin-bottom: 20px;
+}
+
+.hidden {
+  display: none;
 }
