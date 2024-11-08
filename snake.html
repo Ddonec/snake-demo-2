@@ -56,7 +56,11 @@
       <button class="button-main" onclick="showLeaderboard()">
         РЕЙТИНГ ИГРОКОВ
       </button>
-      <button class="button-main" onclick="showRegistration()">
+      <button
+        class="button-main"
+        id="registerButton"
+        onclick="showRegistration()"
+      >
         Зарегистрироваться
       </button>
       <button class="button-main" onclick="startGame()">НАЧАТЬ ИГРУ</button>
@@ -118,8 +122,8 @@
           Зарегистрироваться
         </button>
       </form>
-      <p id="successMessage" class="hidden">Регистрация прошла успешно!</p>
     </div>
+    <p id="successMessage" class="hidden">Регистрация прошла успешно!</p>
   </body>
   <script src="./snake.js"></script>
 </html>
