@@ -377,10 +377,61 @@ function updateLeaderboard(name, score) {
     localStorage.setItem('leaderboard', JSON.stringify(leaderboardData));
 }
 
-
-
-
-
+function registerUser() {
+    // Получаем данные формы
+    const form = document.getElementById('registrationForm');
+    const nickname = form.elements['nickname'].value.trim();
+    const name = form.elements['name'].value.trim();
+    const surname = form.elements['surname'].value.trim();
+    const tel = form.elements['tel'].value.trim();
+    const profession = form.elements['profession'].value.trim();
+    const email = form.elements['email'].value.trim();
+  
+    // Проверка на заполненность всех полей
+    if (!nickname || !name || !surname || !tel || !profession || !email) {
+      alert("Пожалуйста, заполните все поля.");
+      return;
+    }
+  
+    // Валидация телефона и email (можно дополнить по необходимости)
+    const phonePattern = /^[0-9]{10}$/;
+    if (!phonePattern.test(tel)) {
+      alert("Введите корректный телефон (10 цифр).");
+      return;
+    }
+  
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+      alert("Введите корректный E-mail.");
+      return;
+    }
+  
+    // Получаем текущий массив лидеров из localStorage
+    let leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
+  
+    // Добавляем нового пользователя в массив
+    leaderboard.push({
+      nickname: nickname,
+      name: name,
+      surname: surname,
+      tel: tel,
+      profession: profession,
+      email: email,
+      score: 0 
+    });
+  
+    // Сохраняем обновлённый массив в localStorage
+    localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
+  
+    // Показываем сообщение об успешной регистрации
+    const successMessage = document.getElementById('successMessage');
+    successMessage.classList.remove('hidden');
+    successMessage.innerText = "Регистрация прошла успешно!";
+  
+    // Очищаем форму после регистрации
+    form.reset();
+  }
+  
 
 
 function showMenu() {

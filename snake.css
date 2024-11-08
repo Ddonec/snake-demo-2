@@ -115,6 +115,7 @@ body {
   border-radius: 6px;
   border: none;
   height: 5vh;
+  padding-left: 20px;
 }
 .input-tab {
   padding: 5px 10px;

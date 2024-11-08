@@ -89,35 +89,36 @@
     <div class="registration hidden">
       <h2>Регистрация</h2>
       <form id="registrationForm">
-        <label
-          ><span class="input-tab">Никнейм:</span
-          ><input type="text" name="nickname" required
-        /></label>
-        <label
-          ><span class="input-tab">Имя:</span
-          ><input type="text" name="name" required
-        /></label>
-        <label
-          ><span class="input-tab">Фамилия:</span
-          ><input type="text" name="surname" required
-        /></label>
-        <label
-          ><span class="input-tab">Телефон:</span
-          ><input type="tel" name="tel" required
-        /></label>
-        <label
-          ><span class="input-tab">Профессия:</span
-          ><input type="text" name="profession" required
-        /></label>
-        <label
-          ><span class="input-tab">E-mail:</span
-          ><input type="email" name="email" required
-        /></label>
+        <label>
+          <span class="input-tab">Никнейм:</span>
+          <input type="text" name="nickname" required />
+        </label>
+        <label>
+          <span class="input-tab">Имя:</span>
+          <input type="text" name="name" required />
+        </label>
+        <label>
+          <span class="input-tab">Фамилия:</span>
+          <input type="text" name="surname" required />
+        </label>
+        <label>
+          <span class="input-tab">Телефон:</span>
+          <input type="tel" name="tel" required pattern="[0-9]{10}" />
+        </label>
+        <label>
+          <span class="input-tab">Профессия:</span>
+          <input type="text" name="profession" required />
+        </label>
+        <label>
+          <span class="input-tab">E-mail:</span>
+          <input type="email" name="email" required />
+        </label>
         <br />
-        <button class="button-main" type="button" onclick="startGame()">
-          Начать игру
+        <button class="button-main" type="button" onclick="registerUser()">
+          Зарегистрироваться
         </button>
       </form>
+      <p id="successMessage" class="hidden">Регистрация прошла успешно!</p>
     </div>
   </body>
   <script src="./snake.js"></script>
