@@ -124,7 +124,8 @@ body {
   width: fit-content;
   margin-bottom: 1vh;
 }
-.hello-text {
+.hello-text,
+#successMessage {
   width: 90vw;
   margin: 0 auto;
 }

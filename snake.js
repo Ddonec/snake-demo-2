@@ -1,6 +1,33 @@
 if(!localStorage.getItem('snake-high-score'))
     localStorage.setItem('snake-high-score','0');
 
+window.onload = function() {
+    // Проверяем, есть ли в localStorage данные для leaderboard
+    if (localStorage.getItem('leaderboard')) {
+        // Если данные есть, скрываем кнопку регистрации
+        document.getElementById('registerButton').style.display = 'none';
+        const successMessage = document.getElementById('successMessage');
+        if (successMessage) {
+            successMessage.classList.remove('hidden');
+        }        const leaderboard = localStorage.getItem('leaderboard');
+
+        // Преобразуем строку обратно в массив объектов
+        const leaderboardArray = JSON.parse(leaderboard);
+        
+        // Получаем никнейм первого элемента (если он существует)
+        const nickname = leaderboardArray.length > 0 ? leaderboardArray[0].nickname : null;
+        
+        console.log(nickname);        
+        document.getElementById("successMessage").innerText = `${nickname}, вы успешно зарегистрированы!`;
+   
+
+    } else {
+        // Если данных нет, показываем кнопку регистрации
+        document.getElementById('registerButton').style.display = 'block';
+    }
+
+};
+
 var row = 18;  // Высота поля
 var col = 10;  // Ширина поля
 
@@ -357,25 +384,40 @@ function gameOver() {
     }
 
     // Обновляем таблицу лидеров
-    updateLeaderboard('Игрок', currentScore);
+    updateLeaderboard(currentScore);
 }
 
-function updateLeaderboard(name, score) {
-    // Загружаем текущие данные лидеров
+function updateLeaderboard(score) {
+    // Загружаем текущие данные лидеров из localStorage
     let leaderboardData = JSON.parse(localStorage.getItem('leaderboard')) || [];
+    console.log(leaderboardData)
+
+    // Получаем данные игрока из формы или из localStorage
+    const nickname = leaderboardData[0].nickname || 'Игрок';
+    const name = leaderboardData[0].name || 'Без имени';  // Пример для имени
+    const surname = leaderboardData[0].surname || 'Без фамилии'; // Пример для фамилии
+    const tel = leaderboardData[0].tel || 'Не указан';  // Пример для телефона
+    const profession = leaderboardData[0].profession || 'Не указана'; // Пример для профессии
+    const email = leaderboardData[0].email || 'Не указан';  // Пример для email
 
     // Добавляем новый результат в массив
-    leaderboardData.push({ name: name, score: score });
+    leaderboardData.push({
+        nickname: nickname,
+        name: name,
+        surname: surname,
+        tel: tel,
+        profession: profession,
+        email: email,
+        score: score 
+    });
 
     // Сортируем по убыванию (по полю score)
     leaderboardData.sort((a, b) => b.score - a.score);
 
-    // Ограничиваем количество записей (например, 5 лучших)
-    leaderboardData = leaderboardData.slice(0, 5);
-
-    // Сохраняем обновлённые данные в localStorage
+    // Сохраняем обновленные данные в localStorage
     localStorage.setItem('leaderboard', JSON.stringify(leaderboardData));
 }
+
 
 function registerUser() {
     // Получаем данные формы
@@ -488,6 +530,7 @@ function startGame() {
     document.querySelector('.leaderboard').classList.add('hidden');
     document.querySelector('.registration').classList.add('hidden');
     document.querySelector('.hello-text').classList.add('hidden');
+    document.getElementById('successMessage').classList.add('hidden');
     document.querySelector('.container').classList.remove('hidden');  
     document.querySelector('.footer').classList.remove('hidden');  
     document.querySelector('.score').classList.remove('hidden');  
