@@ -505,9 +505,11 @@ function showLeaderboard() {
     leaderboardData.forEach((entry, index) => {
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td>${index + 1}</td>
-            <td>${entry.name}</td>
-            <td>${entry.score}</td>
+            <div class="yellow-tab">${index + 1} место</div>
+            <div class="leaderboard-score">
+            <span>${entry.nickname}</span>
+            <span>${entry.score}</span>
+            </div>
         `;
         leaderboardTable.appendChild(row);
     });
