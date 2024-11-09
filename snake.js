@@ -204,11 +204,9 @@ document.addEventListener("touchend", (event) => {
 }, false);
 
 function handleSwipe() {
-    // Если змейка уже изменила направление, ждем следующего свайпа
     if (!flag) return;
     flag = 0;
 
-    // Определяем смещения по осям
     const diffX = Math.abs(endTouchX - startTouchX);
     const diffY = Math.abs(endTouchY - startTouchY);
 
@@ -245,43 +243,45 @@ function moveSnake() {
 }
 
 
-function addTail()
-{
-    if(direction == 'left')
-    {
-        a1.unshift(a1[0]);
-        if(a2[0]==0)
-        {
-            a2.unshift(col-1);
+function addTail() {
+    setTimeout(function() {
+        // Получаем координаты последнего сегмента (хвоста)
+        let tailRow = a1[a1.length - 1];
+        let tailCol = a2[a2.length - 1];
+
+        if (direction == 'left') {
+            if (tailCol == col - 1) {
+                a2.push(0); // если хвост на краю, появляется с другой стороны
+            } else {
+                a2.push(tailCol + 1);
+            }
+            a1.push(tailRow); // ряд хвоста не меняется
+        } else if (direction == 'right') {
+            if (tailCol == 0) {
+                a2.push(col - 1); // если хвост на краю, появляется с другой стороны
+            } else {
+                a2.push(tailCol - 1);
+            }
+            a1.push(tailRow);
+        } else if (direction == 'up') {
+            if (tailRow == row - 1) {
+                a1.push(0);
+            } else {
+                a1.push(tailRow + 1);
+            }
+            a2.push(tailCol);
+        } else if (direction == 'down') {
+            if (tailRow == 0) {
+                a1.push(row - 1);
+            } else {
+                a1.push(tailRow - 1);
+            }
+            a2.push(tailCol);
         }
-        else
-        {
-            a2.unshift(a2[0]-1);
-        }
-    }
-    else if(direction == 'right')
-    {
-        a1.unshift(a1[0]);
-        a2.unshift((a2[0]+1)%col);
-    }
-    else if(direction == 'up')
-    {
-        if(a1[0]==0)
-        {
-            a1.unshift(row-1);
-        }
-        else
-        {
-            a1.unshift(a1[0]-1);
-        }
-        a2.unshift(a2[0]);
-    }
-    else if(direction == 'down')
-    {
-        a1.unshift((a1[0]+1)%row);
-        a2.unshift(a2[0]);
-    }
+    }, 10);
 }
+
+
 
 function checkCollision()
 {
