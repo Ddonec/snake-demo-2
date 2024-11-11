@@ -479,6 +479,7 @@ function registerUser() {
 function showMenu() {
     document.querySelector('.main-menu').classList.remove('hidden');
     document.querySelector('.hello-text').classList.remove('hidden');
+    document?.getElementById('successMessage').classList.remove('hidden');
     document.querySelector('.rules').classList.add('hidden');
     document.querySelector('.leaderboard').classList.add('hidden');
     document.querySelector('.registration').classList.add('hidden');
@@ -487,6 +488,7 @@ function showMenu() {
 function showRules() {
     document.querySelector('.main-menu').classList.add('hidden');
     document.querySelector('.hello-text').classList.add('hidden');
+    document?.getElementById('successMessage').classList.add('hidden');
     document.querySelector('.rules').classList.remove('hidden');
 }
 
@@ -495,6 +497,7 @@ function showLeaderboard() {
     
     document.querySelector('.main-menu').classList.add('hidden');
     document.querySelector('.hello-text').classList.add('hidden');
+    document?.getElementById('successMessage').classList.add('hidden');
     document.querySelector('.leaderboard').classList.remove('hidden');
     
     const leaderboardData = JSON.parse(localStorage.getItem('leaderboard')) || [];
