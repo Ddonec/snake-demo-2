@@ -5,6 +5,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Snake Game</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fact&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="./snake.css" />
   </head>
   <body>
@@ -27,7 +31,7 @@
       <p>Ваш счёт: <span class="final-score"></span></p>
     </div>
     <div class="leaderboard hidden">
-      <h2>Рейтинг игроков</h2>
+      <h2 class="white">Рейтинг игроков</h2>
       <table class="leaderboard-table">
         <thead>
           <tr>
@@ -67,6 +71,10 @@
     </div>
 
     <div class="rules hidden">
+      <h2 class="rules-title">
+        ПРАВИЛА <br />
+        ИГРЫ
+      </h2>
       <p>
         Цель игры – собрать максимально длинную змейку из Forte&Piano, набрав
         максимальное количество очков!
@@ -107,7 +115,14 @@
         </label>
         <label>
           <span class="input-tab">Телефон:</span>
-          <input type="tel" name="tel" required pattern="[0-9]{10}" />
+          <input
+            type="tel"
+            name="tel"
+            required
+            pattern="[0-9]{9,16}"
+            minlength="9"
+            maxlength="16"
+          />
         </label>
         <label>
           <span class="input-tab">Профессия:</span>
@@ -121,6 +136,7 @@
         <button class="button-main" type="button" onclick="registerUser()">
           Зарегистрироваться
         </button>
+        <button class="button-main mt-10" onclick="showMenu()">Назад</button>
       </form>
     </div>
     <p id="successMessage" class="hidden">Регистрация прошла успешно!</p>
