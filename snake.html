@@ -107,7 +107,7 @@
         </label>
         <label>
           <span class="input-tab">Телефон:</span>
-          <input type="tel" name="tel" required pattern="[0-9]{10}" />
+          <input type="tel" name="tel" required pattern="[0-9]{9,16}" minlength="9" maxlength="16" />
         </label>
         <label>
           <span class="input-tab">Профессия:</span>
@@ -121,6 +121,7 @@
         <button class="button-main" type="button" onclick="registerUser()">
           Зарегистрироваться
         </button>
+        <button class="button-main mt-10" onclick="showMenu()">Назад</button>
       </form>
     </div>
     <p id="successMessage" class="hidden">Регистрация прошла успешно!</p>

@@ -436,9 +436,9 @@ function registerUser() {
     }
   
     // Валидация телефона и email (можно дополнить по необходимости)
-    const phonePattern = /^[0-9]{10}$/;
+    const phonePattern = /^[0-9]{9,16}$/;
     if (!phonePattern.test(tel)) {
-      alert("Введите корректный телефон (10 цифр).");
+      alert("Введите корректный телефон (от 9 до 16 символов).");
       return;
     }
   
