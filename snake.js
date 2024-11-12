@@ -6,6 +6,7 @@ window.onload = function() {
     if (localStorage.getItem('leaderboard')) {
         // Если данные есть, скрываем кнопку регистрации
         document.getElementById('registerButton').style.display = 'none';
+        document.getElementById('startButton').textContent = 'НАЧАТЬ ИГРУ';
         const successMessage = document.getElementById('successMessage');
         if (successMessage) {
             successMessage.classList.remove('hidden');
