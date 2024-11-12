@@ -44,6 +44,19 @@ let leaderboardData = [
     { name: 'Игрок 3', score: 10 }
 ];
 
+const bodyImages = [
+    'assets/snake/snakebody1.svg',
+    'assets/snake/snakebody2.svg',
+    'assets/snake/snakebody3.svg',
+    'assets/snake/snakebody4.svg',
+    'assets/snake/snakebody5.svg',
+    'assets/snake/snakebody6.svg',
+    'assets/snake/snakebody7.svg',
+    'assets/snake/snakebody8.svg'
+];
+
+let snakeBodyParts = ["assets/snake/snakebody1.svg"];
+
 
 function placeFood() {
     while (true) {
@@ -91,27 +104,27 @@ function renderSnake() {
     for (let i = 0; i < a1.length; i++) {
         let cell = document.querySelector(`#c${a1[i]}-${a2[i]}`);
         
-        if (cell) { // Проверка на существование элемента
+        if (cell) {
             cell.innerHTML = ''; // Очищаем содержимое ячейки
 
             let img = document.createElement('img');
             img.classList.add('snake-part');
 
-            // Устанавливаем изображения головы, хвоста и тела с учетом поворота
             if (i === 0) { // Голова змейки
                 img.src = 'assets/snake/snakefront.svg';
                 img.classList.add(getRotationClass(direction));
             } else if (i === a1.length - 1) { // Хвост змейки
                 img.src = 'assets/snake/snakeback.svg';
                 img.classList.add(getRotationClass(getTailDirection()));
-            } else { // Части тела змейки
-                img.src = (i % 2 === 0) ? 'assets/snake/snakebody1.svg' : 'assets/snake/snakebody2.svg';
+            } else { // Части тела змейки с фиксацией случайных элементов
+                img.src = snakeBodyParts[i - 1];
             }
 
             cell.appendChild(img);
         }
     }
 }
+
 
 
 
@@ -246,38 +259,28 @@ function moveSnake() {
 
 function addTail() {
     setTimeout(function() {
-        // Получаем координаты последнего сегмента (хвоста)
         let tailRow = a1[a1.length - 1];
         let tailCol = a2[a2.length - 1];
 
-        if (direction == 'left') {
-            if (tailCol == col - 1) {
-                a2.push(0); // если хвост на краю, появляется с другой стороны
-            } else {
-                a2.push(tailCol + 1);
-            }
-            a1.push(tailRow); // ряд хвоста не меняется
-        } else if (direction == 'right') {
-            if (tailCol == 0) {
-                a2.push(col - 1); // если хвост на краю, появляется с другой стороны
-            } else {
-                a2.push(tailCol - 1);
-            }
+        // Добавляем новый сегмент на основе направления движения
+        if (direction === 'left') {
+            a2.push((tailCol === col - 1) ? 0 : tailCol + 1);
             a1.push(tailRow);
-        } else if (direction == 'up') {
-            if (tailRow == row - 1) {
-                a1.push(0);
-            } else {
-                a1.push(tailRow + 1);
-            }
+        } else if (direction === 'right') {
+            a2.push((tailCol === 0) ? col - 1 : tailCol - 1);
+            a1.push(tailRow);
+        } else if (direction === 'up') {
+            a1.push((tailRow === row - 1) ? 0 : tailRow + 1);
             a2.push(tailCol);
-        } else if (direction == 'down') {
-            if (tailRow == 0) {
-                a1.push(row - 1);
-            } else {
-                a1.push(tailRow - 1);
-            }
+        } else if (direction === 'down') {
+            a1.push((tailRow === 0) ? row - 1 : tailRow - 1);
             a2.push(tailCol);
+        }
+
+        // Генерируем случайные элементы тела при первом добавлении
+        if (snakeBodyParts.length < a1.length) {
+            const randomPart = bodyImages[Math.floor(Math.random() * bodyImages.length)];
+            snakeBodyParts.push(randomPart);
         }
     }, 10);
 }
