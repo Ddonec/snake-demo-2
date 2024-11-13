@@ -1,5 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Balsamiq+Sans&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Wix+Madefor+Display:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Wix+Madefor+Display:wght@400..800&display=swap");
 
 * {
   margin: 0;
@@ -114,6 +113,11 @@ body {
   color: black;
   text-transform: uppercase;
   display: block;
+  font-weight: 700;
+}
+.button-main span {
+  text-transform: lowercase;
+  font-weight: 400;
 }
 #registrationForm label {
   display: flex;
@@ -139,7 +143,6 @@ body {
   width: 90vw;
   margin: 0 auto;
   color: white;
-  font-family: "Fact", sans-serif;
 }
 .rules-title {
   text-align: center;
