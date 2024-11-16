@@ -24,7 +24,8 @@ const bodyImages = [
 ];
 
 let snakeBodyParts = ["assets/snake/snakebody1.svg"];
-let currentFoodType = 'food2'; // Текущий тип еды (food или food2)
+let foodPartToPush;
+let currentFoodType;
 
 function getRandomElement(array) {
     const randomIndex = Math.floor(Math.random() * array.length);
@@ -104,6 +105,7 @@ function renderSnake() {
             }
 
             cell.appendChild(img);
+
         }
     }
 }
@@ -241,7 +243,7 @@ function moveSnake() {
 
 
 function addTail() {
-    // setTimeout(function() {
+    setTimeout(function() {
         let tailRow = a1[a1.length - 1];
         let tailCol = a2[a2.length - 1];
 
@@ -259,8 +261,8 @@ function addTail() {
             a2.push(tailCol);
         }
 
-            snakeBodyParts.push(currentFoodType);
-    // }, 10);
+            snakeBodyParts.push(foodPartToPush);
+    }, 50);
 }
 
 
@@ -299,7 +301,7 @@ var func = setInterval(() => {
     }
 
     moveSnake();
-
+    foodPartToPush = currentFoodType
     // Проверяем, находится ли голова змейки в позиции еды
     if (a1[0] === fr && a2[0] === fc) {
         currentScore++;
@@ -372,7 +374,7 @@ function gameOver() {
 function showMenu() {
     document.querySelector('.main-menu').classList.remove('hidden');
     document.querySelector('.hello-text').classList.remove('hidden');
-    document?.getElementById('successMessage').classList.remove('hidden');
+    // document?.getElementById('successMessage').classList.remove('hidden');
     document.querySelector('.rules').classList.add('hidden');
     document.querySelector('.leaderboard').classList.add('hidden');
     document.querySelector('.registration').classList.add('hidden');
@@ -381,7 +383,7 @@ function showMenu() {
 function showRules() {
     document.querySelector('.main-menu').classList.add('hidden');
     document.querySelector('.hello-text').classList.add('hidden');
-    document?.getElementById('successMessage').classList.add('hidden');
+    // document?.getElementById('successMessage').classList.add('hidden');
     document.querySelector('.rules').classList.remove('hidden');
 }
 
@@ -390,7 +392,7 @@ function showLeaderboard() {
     
     document.querySelector('.main-menu').classList.add('hidden');
     document.querySelector('.hello-text').classList.add('hidden');
-    document?.getElementById('successMessage').classList.add('hidden');
+    // document?.getElementById('successMessage').classList.add('hidden');
     document.querySelector('.leaderboard').classList.remove('hidden');
     
     const leaderboardData = JSON.parse(localStorage.getItem('leaderboard')) || [];
@@ -421,8 +423,8 @@ function startGame() {
     document.querySelector('.leaderboard').classList.add('hidden');
     document.querySelector('.registration').classList.add('hidden');
     document.querySelector('.hello-text').classList.add('hidden');
-    document.getElementById('successMessage').classList.add('hidden');
-    document.querySelector('.container').classList.remove('hidden');  
+    // document?.getElementById('successMessage').classList.add('hidden');
+    document?.querySelector('.container').classList.remove('hidden');  
     document.querySelector('.footer').classList.remove('hidden');  
     document.querySelector('.score').classList.remove('hidden');  
     createContainer();
