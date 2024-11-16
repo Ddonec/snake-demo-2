@@ -60,14 +60,9 @@
       <button class="button-main" onclick="showLeaderboard()">
         РЕЙТИНГ ИГРОКОВ
       </button>
-      <button
-        class="button-main"
-        id="registerButton"
-        onclick="showRegistration()"
-      >
-        Зарегистрироваться <span>(для участия в турнире)</span>
+      <button class="button-main" id="startButton" onclick="startGame()">
+        НАЧАТЬ ИГРУ
       </button>
-      <button class="button-main" id="startButton" onclick="startGame()">НАЧАТЬ ИГРУ <span>(без рейтинга)</span></button>
     </div>
 
     <div class="rules hidden">
@@ -139,7 +134,7 @@
         <button class="button-main mt-10" onclick="showMenu()">Назад</button>
       </form>
     </div>
-    <p id="successMessage" class="hidden">Регистрация прошла успешно!</p>
+    <!-- <p id="successMessage" class="hidden">Регистрация прошла успешно!</p> -->
   </body>
   <script src="./snake.js"></script>
 </html>
