@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      html,
+      body {
+        height: 100dvh;
+        overflow: hidden;
+      }
+      body {
+        padding: 0;
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <iframe
+      src="index.html"
+      frameborder="0"
+      width="100%"
+      height="100%"
+      onload="frameOnload(this)"
+    ></iframe>
+  </body>
+  <script>
+    function frameOnload(f) {
+      console.log("hi");
+      const win = f.contentWindow;
+      setTimeout(() => {
+        console.log(win);
+        win.postMessage({
+          userId: "74837",
+          email: "test@gmail.com",
+          currentScore: 90,
+          updateScoreUrl: "youtube.com",
+          leaderBoardUrl: "getnewscore.ru",
+        });
+      }, 1000);
+    }
+  </script>
+</html>

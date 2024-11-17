@@ -1,6 +1,6 @@
 if(!localStorage.getItem('snake-high-score'))
     localStorage.setItem('snake-high-score','0');
-
+(function(){
 
 var row = 18;  // Высота поля
 var col = 10;  // Ширина поля
@@ -8,8 +8,14 @@ var col = 10;  // Ширина поля
 var a1 = [Math.floor(row / 2), Math.floor(row / 2), Math.floor(row / 2)];  // Начальная позиция змейки по строкам
 var a2 = [Math.floor(col / 2), Math.floor(col / 2) - 1, Math.floor(col / 2) - 2];  // Начальная позиция змейки по столбцам
 
-var fr,fc,flag=0,highScore=parseInt(localStorage.getItem('snake-high-score')),currentScore=0;
+var fr,fc,flag=0,highScore=parseInt(localStorage.getItem('snake-high-score'));
 var direction = 'right';
+
+var userId;              // Идентификатор пользователя на БП
+var email;               // Электропочта пользователя
+var currentScore = 0;        // Текущий счёт пользователя, если имеется, то число
+var updateScoreUrl;      // Урл для отправки сообщений на обновление счёта
+var leaderBoardUrl;      // Урл для получения данных для отрисовки таблицы результатов
 
 
 const bodyImages = [
@@ -66,7 +72,7 @@ function placeFood() {
 
 function createContainer() {
     document.querySelector('.current-score').innerHTML = currentScore;
-    document.querySelector('.high-score').innerHTML = highScore;
+    document.querySelector('.high-score').innerHTML = currentScore;
 
     let container = document.querySelector('.container');
     container.innerHTML = '';
@@ -371,7 +377,7 @@ function gameOver() {
 }
 
 
-function showMenu() {
+window.showMenu = function () {
     document.querySelector('.main-menu').classList.remove('hidden');
     document.querySelector('.hello-text').classList.remove('hidden');
     // document?.getElementById('successMessage').classList.remove('hidden');
@@ -380,14 +386,14 @@ function showMenu() {
     document.querySelector('.registration').classList.add('hidden');
 }
 
-function showRules() {
+window.showRules = function () {
     document.querySelector('.main-menu').classList.add('hidden');
     document.querySelector('.hello-text').classList.add('hidden');
     // document?.getElementById('successMessage').classList.add('hidden');
     document.querySelector('.rules').classList.remove('hidden');
 }
 
-function showLeaderboard() {
+window.showLeaderboard = function() {
     console.log("Showing leaderboard...");
     
     document.querySelector('.main-menu').classList.add('hidden');
@@ -417,7 +423,7 @@ function showLeaderboard() {
 
 
 
-function startGame() {
+window.startGame = function () {
     document.querySelector('.main-menu').classList.add('hidden');
     document.querySelector('.rules').classList.add('hidden');
     document.querySelector('.leaderboard').classList.add('hidden');
@@ -429,3 +435,21 @@ function startGame() {
     document.querySelector('.score').classList.remove('hidden');  
     createContainer();
 }
+
+
+window.addEventListener("message", receiveMessage, false);
+
+function receiveMessage(event) {
+    const data = event.data;
+    console.log(data)
+    userId = data.userId     
+    email = data.email         
+    currentScore = data.currentScore || 0
+    updateScoreUrl = data.updateScoreUrl
+    leaderBoardUrl = data.leaderBoardUrl
+}
+
+
+
+
+})();
