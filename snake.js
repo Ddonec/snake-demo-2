@@ -331,22 +331,58 @@ function gameOver() {
         container.style.display = "none";
     } else {
         console.error("Container not found!");
+        window.parent.postMessage(
+            JSON.stringify({
+                type: "error",
+                data: {
+                    reason: "Элемент не найден",
+                    level: "error"
+                }
+            }),
+            "*"
+        );
     }
-    
+
     let div = document.querySelector('.game-over');
     if (div) {
         div.style.display = "block";
         document.querySelector('.final-score').innerText = defaultScore;
     } else {
         console.error("Game Over element not found!");
+        window.parent.postMessage(
+            JSON.stringify({
+                type: "error",
+                data: {
+                    reason: "Элемент не найден в исходном коде",
+                    level: "error"
+                }
+            }),
+            "*"
+        );
     }
 
-    if((defaultScore > highScore) && (defaultScore > currentScore)) {
-        document.querySelector('.high-score').innerHTML = defaultScore ;
+    if ((defaultScore > highScore) && (defaultScore > currentScore)) {
+        document.querySelector('.high-score').innerHTML = defaultScore;
         localStorage.setItem('snake-high-score', defaultScore);
     }
-    updatePostScore(defaultScore)
+
+    try {
+        updatePostScore(defaultScore);
+    } catch (error) {
+        console.error("Ошибка при обновлении счёта:", error);
+        window.parent.postMessage(
+            JSON.stringify({
+                type: "error",
+                data: {
+                    reason: "Ошибка при обновлении счёта",
+                    level: "critical"
+                }
+            }),
+            "*"
+        );
+    }
 }
+
 
 
 function updatePostScore(score) {
@@ -391,31 +427,95 @@ window.showRules = function () {
     document.querySelector('.rules').classList.remove('hidden');
 }
 
-window.showLeaderboard = function() {
-    
+window.showLeaderboard = function () {
     document.querySelector('.main-menu').classList.add('hidden');
     document.querySelector('.hello-text').classList.add('hidden');
     document.querySelector('.leaderboard').classList.remove('hidden');
-    
-    const leaderboardData = JSON.parse(localStorage.getItem('leaderboard')) || [];
+
     const leaderboardTable = document.querySelector('.leaderboard-table');
+    leaderboardTable.innerHTML = ''; 
 
-    leaderboardTable.innerHTML = '';
-    
-    leaderboardData.forEach((entry, index) => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <div class="yellow-tab">${index + 1} место</div>
-            <div class="leaderboard-score">
-            <span>${entry.nickname}</span>
-            <span>${entry.score}</span>
-            </div>
-        `;
-        leaderboardTable.appendChild(row);
-    });
+    if (!leaderBoardUrl) {
+        console.error("URL для получения таблицы лидеров не установлен!");
+        window.parent.postMessage(
+            JSON.stringify({
+                type: "error",
+                data: {
+                    reason: "URL для получения таблицы лидеров не установлен",
+                    level: "critical"
+                }
+            }),
+            "*"
+        );
+        return;
+    }
 
-    console.log("Leaderboard shown.");
-}
+    fetch(leaderBoardUrl)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Ошибка HTTP: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (!data.top || !data.userBoundary) {
+                throw new Error("Неверный формат ответа от сервера");
+            }
+
+            const topSection = document.createElement('div');
+            topSection.classList.add('leaderboard-top');
+            topSection.innerHTML = '<h2>Топ участников</h2>';
+
+            data.top.forEach(entry => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <div class="yellow-tab">${entry.place} место</div>
+                    <div class="leaderboard-score">
+                        <span>${entry.email}</span>
+                        <span>${entry.score}</span>
+                    </div>
+                `;
+                topSection.appendChild(row);
+            });
+
+            leaderboardTable.appendChild(topSection);
+
+            const userBoundarySection = document.createElement('div');
+            userBoundarySection.classList.add('leaderboard-user-boundary');
+            userBoundarySection.innerHTML = '<h2>. . .</h2>';
+
+            data.userBoundary.forEach(entry => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <div class="yellow-tab">${entry.place} место</div>
+                    <div class="leaderboard-score">
+                        <span>${entry.email}</span>
+                        <span>${entry.score}</span>
+                    </div>
+                `;
+                userBoundarySection.appendChild(row);
+            });
+
+            leaderboardTable.appendChild(userBoundarySection);
+
+            console.log("Leaderboard shown.");
+        })
+        .catch(error => {
+            console.error("Ошибка при получении таблицы лидеров:", error);
+            window.parent.postMessage(
+                JSON.stringify({
+                    type: "error",
+                    data: {
+                        reason: error.message,
+                        level: "critical"
+                    }
+                }),
+                "*"
+            );
+        });
+};
+
+
 
 window.startGame = function () {
     document.querySelector('.main-menu').classList.add('hidden');

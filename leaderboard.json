@@ -1,0 +1,12 @@
+{
+    "top": [
+        {"email": "user1@example.com", "score": 150, "place": 1},
+        {"email": "user2@example.com", "score": 140, "place": 2},
+        {"email": "user3@example.com", "score": 130, "place": 3}
+    ],
+    "userBoundary": [
+        {"email": "user10@example.com", "score": 100, "place": 10},
+        {"email": "user11@example.com", "score": 90, "place": 11},
+        {"email": "user12@example.com", "score": 80, "place": 12}
+    ]
+}
