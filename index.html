@@ -76,65 +76,31 @@
       </p>
       <ul class="rules-list">
         <li>
-          Управляй стрелками головой растущей змейки, собирая всплывающие
-          изделия.
+          - Собирайте из изделий коллекции FORTE&PIANO максимально длинный ряд -
+          Змейку.
         </li>
         <li>
-          Избегай столкновения с собственным телом и краями поля. При
-          столкновении жизнь обрывается.
+          - Управляйте Змейкой, двигая по экрану вверх-вниз и вправо-влево,
+          собирая всплывающие изделия.
         </li>
-        <li>Всего у тебя 9 жизней.</li>
-        <li>За каждое собранное изделие тебе начисляются очки.</li>
         <li>
-          Очки, набранные тобой за все жизни, суммируются, формируя твой рейтинг
-          в табло игроков.
+          - Каждое собранное изделие увеличивает длину змейки и приносит 10
+          баллов.
+        </li>
+        <li>
+          - Избегайте столкновения головы Змейки с телом, иначе ее жизнь
+          оборвется.
+        </li>
+        <li>- Количество жизней (попыток) не ограничено.</li>
+        <li>
+          <b
+            >- В рейтинге учитывается лучший результат за все попытки
+            (наибольшее количество баллов, набранное за одну игру).</b
+          >
         </li>
       </ul>
       <button class="button-main" onclick="showMenu()">Назад</button>
     </div>
-
-    <div class="registration hidden">
-      <h2>Регистрация</h2>
-      <form id="registrationForm">
-        <label>
-          <span class="input-tab">Никнейм:</span>
-          <input type="text" name="nickname" required />
-        </label>
-        <label>
-          <span class="input-tab">Имя:</span>
-          <input type="text" name="name" required />
-        </label>
-        <label>
-          <span class="input-tab">Фамилия:</span>
-          <input type="text" name="surname" required />
-        </label>
-        <label>
-          <span class="input-tab">Телефон:</span>
-          <input
-            type="tel"
-            name="tel"
-            required
-            pattern="[0-9]{9,16}"
-            minlength="9"
-            maxlength="16"
-          />
-        </label>
-        <label>
-          <span class="input-tab">Профессия:</span>
-          <input type="text" name="profession" required />
-        </label>
-        <label>
-          <span class="input-tab">E-mail:</span>
-          <input type="email" name="email" required />
-        </label>
-        <br />
-        <button class="button-main" type="button" onclick="registerUser()">
-          Зарегистрироваться
-        </button>
-        <button class="button-main mt-10" onclick="showMenu()">Назад</button>
-      </form>
-    </div>
-    <!-- <p id="successMessage" class="hidden">Регистрация прошла успешно!</p> -->
   </body>
   <script src="./snake.js"></script>
 </html>
