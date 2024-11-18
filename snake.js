@@ -8,12 +8,12 @@ var col = 10;  // Ширина поля
 var a1 = [Math.floor(row / 2), Math.floor(row / 2), Math.floor(row / 2)];  // Начальная позиция змейки по строкам
 var a2 = [Math.floor(col / 2), Math.floor(col / 2) - 1, Math.floor(col / 2) - 2];  // Начальная позиция змейки по столбцам
 
-var fr,fc,flag=0,highScore=parseInt(localStorage.getItem('snake-high-score'));
+var fr,fc,flag=0,highScore=parseInt(localStorage.getItem('snake-high-score')),defaultScore = 0;
 var direction = 'right';
 
 var userId;              // Идентификатор пользователя на БП
 var email;               // Электропочта пользователя
-var currentScore = 0;        // Текущий счёт пользователя, если имеется, то число
+var currentScore;        // Текущий счёт пользователя, если имеется, то число
 var updateScoreUrl;      // Урл для отправки сообщений на обновление счёта
 var leaderBoardUrl;      // Урл для получения данных для отрисовки таблицы результатов
 
@@ -66,13 +66,12 @@ function placeFood() {
         foodImg.src = currentFoodType;
         foodImg.classList.add('food');
         foodCell.appendChild(foodImg);
-        console.log(currentFoodType);
     }
 }
 
 function createContainer() {
-    document.querySelector('.current-score').innerHTML = currentScore;
-    document.querySelector('.high-score').innerHTML = currentScore;
+    document.querySelector('.current-score').innerHTML = defaultScore;
+    document.querySelector('.high-score').innerHTML = (currentScore > highScore) ? currentScore : highScore;
 
     let container = document.querySelector('.container');
     container.innerHTML = '';
@@ -116,9 +115,6 @@ function renderSnake() {
     }
 }
 
-
-
-
 function getRotationClass(direction) {
     switch (direction) {
         case 'right': return 'rotate-0';
@@ -150,8 +146,6 @@ function moveSnake() {
 
     renderSnake();
 }
-
-
 
 document.onkeydown = (event) => {
     if(flag)
@@ -230,7 +224,6 @@ function handleSwipe() {
     }
 }
 
-
 function moveSnake() {
     for (let i = a1.length - 1; i > 0; i--) {
         a1[i] = a1[i - 1];
@@ -246,7 +239,6 @@ function moveSnake() {
         a1[0] = (a1[0] + 1) % row;
     }
 }
-
 
 function addTail() {
     setTimeout(function() {
@@ -271,8 +263,6 @@ function addTail() {
     }, 50);
 }
 
-
-
 function checkCollision()
 {
     let i,j;
@@ -296,51 +286,44 @@ function checkCollision()
 var func = setInterval(() => {
     flag = 1;
 
-    // Очищаем все ячейки перед обновлением позиции змейки
     for (let i = 0; i < row; i++) {
         for (let j = 0; j < col; j++) {
             let cell = document.querySelector('#c' + i + '-' + j);
             if (cell) {
-                cell.innerHTML = ''; // Удаляем все содержимое, включая картинки
+                cell.innerHTML = ''; 
             }
         }
     }
 
     moveSnake();
     foodPartToPush = currentFoodType
-    // Проверяем, находится ли голова змейки в позиции еды
     if (a1[0] === fr && a2[0] === fc) {
-        currentScore++;
-
-        // Удаляем класс 'food' из ячейки, где была еда
+        defaultScore++;
         let eatenFoodCell = document.querySelector('#c' + fr + '-' + fc);
         if (eatenFoodCell) {
             eatenFoodCell.classList.remove('food');
             eatenFoodCell.classList.add('cell');
-            eatenFoodCell.innerHTML = ''; // Удаляем изображение еды
+            eatenFoodCell.innerHTML = ''; 
         }
     
         placeFood();
-        document.querySelector('.current-score').innerHTML = currentScore;
+        document.querySelector('.current-score').innerHTML = defaultScore;
         addTail();
     }
 
     if (a1[0] === fr && a2[0] === fc) {
-        currentScore++;
+        defaultScore++;
         placeFood();
-        document.querySelector('.current-score').innerHTML = currentScore;
+        document.querySelector('.current-score').innerHTML = defaultScore;
         addTail();
     }
-
-    // Перерисовываем змейку, используя только SVG-картинки
     renderSnake();
 
     checkCollision();
 
-    // Устанавливаем изображение еды
     let foodCell = document.querySelector('#c' + fr + '-' + fc);
     if (foodCell) {
-        foodCell.innerHTML = ''; // Очищаем ячейку перед добавлением новой еды
+        foodCell.innerHTML = ''; 
         let foodImg = document.createElement('img');
         foodImg.src = currentFoodType;
         foodImg.classList.add('food');
@@ -348,8 +331,6 @@ var func = setInterval(() => {
     }
 
 }, 200);
-
-
 
 function gameOver() {
     let container = document.querySelector('.container');
@@ -363,24 +344,29 @@ function gameOver() {
     if (div) {
         div.style.display = "block";
         // Обновление финального счёта
-        document.querySelector('.final-score').innerText = currentScore;
+        document.querySelector('.final-score').innerText = defaultScore;
     } else {
         console.error("Game Over element not found!");
     }
 
     // Проверяем, если текущий счёт больше высокого, обновляем его
-    if(currentScore > highScore) {
-        document.querySelector('.high-score').innerHTML = currentScore;
-        localStorage.setItem('snake-high-score', currentScore);
+    if((defaultScore > highScore) && (defaultScore > currentScore)) {
+        document.querySelector('.high-score').innerHTML = defaultScore ;
+        localStorage.setItem('snake-high-score', defaultScore);
     }
-
+    updatePostScore(defaultScore)
 }
 
+function updatePostScore(score){
+    const body = `score=${score}`
+    fetch(updateScoreUrl,{  method: "POST",
+        body: body, headers: new Headers([["Content-Type", "application/x-www-form-urlencoded"], ["Content-Length", ""+body.length]])
+    })
+}
 
 window.showMenu = function () {
     document.querySelector('.main-menu').classList.remove('hidden');
     document.querySelector('.hello-text').classList.remove('hidden');
-    // document?.getElementById('successMessage').classList.remove('hidden');
     document.querySelector('.rules').classList.add('hidden');
     document.querySelector('.leaderboard').classList.add('hidden');
     document.querySelector('.registration').classList.add('hidden');
@@ -389,16 +375,13 @@ window.showMenu = function () {
 window.showRules = function () {
     document.querySelector('.main-menu').classList.add('hidden');
     document.querySelector('.hello-text').classList.add('hidden');
-    // document?.getElementById('successMessage').classList.add('hidden');
     document.querySelector('.rules').classList.remove('hidden');
 }
 
 window.showLeaderboard = function() {
-    console.log("Showing leaderboard...");
     
     document.querySelector('.main-menu').classList.add('hidden');
     document.querySelector('.hello-text').classList.add('hidden');
-    // document?.getElementById('successMessage').classList.add('hidden');
     document.querySelector('.leaderboard').classList.remove('hidden');
     
     const leaderboardData = JSON.parse(localStorage.getItem('leaderboard')) || [];
@@ -421,21 +404,17 @@ window.showLeaderboard = function() {
     console.log("Leaderboard shown.");
 }
 
-
-
 window.startGame = function () {
     document.querySelector('.main-menu').classList.add('hidden');
     document.querySelector('.rules').classList.add('hidden');
     document.querySelector('.leaderboard').classList.add('hidden');
     document.querySelector('.registration').classList.add('hidden');
     document.querySelector('.hello-text').classList.add('hidden');
-    // document?.getElementById('successMessage').classList.add('hidden');
     document?.querySelector('.container').classList.remove('hidden');  
     document.querySelector('.footer').classList.remove('hidden');  
     document.querySelector('.score').classList.remove('hidden');  
     createContainer();
 }
-
 
 window.addEventListener("message", receiveMessage, false);
 
@@ -448,8 +427,5 @@ function receiveMessage(event) {
     updateScoreUrl = data.updateScoreUrl
     leaderBoardUrl = data.leaderBoardUrl
 }
-
-
-
 
 })();
