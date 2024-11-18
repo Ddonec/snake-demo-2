@@ -418,7 +418,6 @@ window.showMenu = function () {
     document.querySelector('.hello-text').classList.remove('hidden');
     document.querySelector('.rules').classList.add('hidden');
     document.querySelector('.leaderboard').classList.add('hidden');
-    document.querySelector('.registration').classList.add('hidden');
 }
 
 window.showRules = function () {
@@ -530,7 +529,6 @@ window.startGame = function () {
     document.querySelector('.main-menu').classList.add('hidden');
     document.querySelector('.rules').classList.add('hidden');
     document.querySelector('.leaderboard').classList.add('hidden');
-    document.querySelector('.registration').classList.add('hidden');
     document.querySelector('.hello-text').classList.add('hidden');
     document?.querySelector('.container').classList.remove('hidden');  
     document.querySelector('.footer').classList.remove('hidden');  
