@@ -1,15 +1,21 @@
 if(!localStorage.getItem('snake-high-score'))
     localStorage.setItem('snake-high-score','0');
-
+(function(){
 
 var row = 18;  // Высота поля
 var col = 10;  // Ширина поля
 
-var a1 = [Math.floor(row / 2), Math.floor(row / 2), Math.floor(row / 2)];  // Начальная позиция змейки по строкам
-var a2 = [Math.floor(col / 2), Math.floor(col / 2) - 1, Math.floor(col / 2) - 2];  // Начальная позиция змейки по столбцам
+var a1 = [Math.floor(row / 2), Math.floor(row / 2), Math.floor(row / 2)];  
+var a2 = [Math.floor(col / 2), Math.floor(col / 2) - 1, Math.floor(col / 2) - 2]; 
 
-var fr,fc,flag=0,highScore=parseInt(localStorage.getItem('snake-high-score')),currentScore=0;
+var fr,fc,flag=0,highScore=parseInt(localStorage.getItem('snake-high-score')),defaultScore = 0;
 var direction = 'right';
+
+var userId;              // Идентификатор пользователя на БП
+var email;               // Электропочта пользователя
+var currentScore;        // Текущий счёт пользователя, если имеется, то число
+var updateScoreUrl;      // Урл для отправки сообщений на обновление счёта
+var leaderBoardUrl;      // Урл для получения данных для отрисовки таблицы результатов
 
 
 const bodyImages = [
@@ -50,23 +56,21 @@ function placeFood() {
 
     let foodCell = document.querySelector('#c' + fr + '-' + fc);
     if (foodCell) {
-        // Случайный выбор еды
         currentFoodType = getRandomElement(bodyImages);
         while (foodCell.firstChild) {
             foodCell.removeChild(foodCell.firstChild);
         }
-        foodCell.innerHTML = ''; // Очищаем ячейку перед добавлением новой еды
+        foodCell.innerHTML = ''; 
         let foodImg = document.createElement('img');
         foodImg.src = currentFoodType;
         foodImg.classList.add('food');
         foodCell.appendChild(foodImg);
-        console.log(currentFoodType);
     }
 }
 
 function createContainer() {
-    document.querySelector('.current-score').innerHTML = currentScore;
-    document.querySelector('.high-score').innerHTML = highScore;
+    document.querySelector('.current-score').innerHTML = defaultScore;
+    document.querySelector('.high-score').innerHTML = (currentScore > highScore) ? currentScore : highScore;
 
     let container = document.querySelector('.container');
     container.innerHTML = '';
@@ -89,18 +93,18 @@ function renderSnake() {
         let cell = document.querySelector(`#c${a1[i]}-${a2[i]}`);
         
         if (cell) {
-            cell.innerHTML = ''; // Очищаем содержимое ячейки
+            cell.innerHTML = ''; 
 
             let img = document.createElement('img');
             img.classList.add('snake-part');
 
-            if (i === 0) { // Голова змейки
+            if (i === 0) { 
                 img.src = 'assets/snake/snakefront.svg';
                 img.classList.add(getRotationClass(direction));
-            } else if (i === a1.length - 1) { // Хвост змейки
+            } else if (i === a1.length - 1) { 
                 img.src = 'assets/snake/snakeback.svg';
                 img.classList.add(getRotationClass(getTailDirection()));
-            } else { // Части тела змейки с фиксацией случайных элементов
+            } else { 
                 img.src = snakeBodyParts[i - 1];
             }
 
@@ -109,9 +113,6 @@ function renderSnake() {
         }
     }
 }
-
-
-
 
 function getRotationClass(direction) {
     switch (direction) {
@@ -144,8 +145,6 @@ function moveSnake() {
 
     renderSnake();
 }
-
-
 
 document.onkeydown = (event) => {
     if(flag)
@@ -186,16 +185,13 @@ document.onkeydown = (event) => {
     }
 }
 
-// Переменные для хранения координат касания
 let startTouchX, startTouchY, endTouchX, endTouchY;
 
-// Обработчик для фиксации начала свайпа
 document.addEventListener("touchstart", (event) => {
     startTouchX = event.touches[0].clientX;
     startTouchY = event.touches[0].clientY;
 }, false);
 
-// Обработчик для фиксации конца свайпа и определения направления
 document.addEventListener("touchend", (event) => {
     endTouchX = event.changedTouches[0].clientX;
     endTouchY = event.changedTouches[0].clientY;
@@ -208,11 +204,8 @@ function handleSwipe() {
 
     const diffX = Math.abs(endTouchX - startTouchX);
     const diffY = Math.abs(endTouchY - startTouchY);
-
-    // Проверяем текущее направление змейки
     const actualDirection = direction;
 
-    // Логика смены направления на основании свайпа
     if (endTouchX < startTouchX && actualDirection !== 'right' && diffX > diffY) {
         direction = 'left';
     } else if (endTouchX > startTouchX && actualDirection !== 'left' && diffX > diffY) {
@@ -223,7 +216,6 @@ function handleSwipe() {
         direction = 'down';
     }
 }
-
 
 function moveSnake() {
     for (let i = a1.length - 1; i > 0; i--) {
@@ -240,7 +232,6 @@ function moveSnake() {
         a1[0] = (a1[0] + 1) % row;
     }
 }
-
 
 function addTail() {
     setTimeout(function() {
@@ -265,8 +256,6 @@ function addTail() {
     }, 50);
 }
 
-
-
 function checkCollision()
 {
     let i,j;
@@ -290,51 +279,44 @@ function checkCollision()
 var func = setInterval(() => {
     flag = 1;
 
-    // Очищаем все ячейки перед обновлением позиции змейки
     for (let i = 0; i < row; i++) {
         for (let j = 0; j < col; j++) {
             let cell = document.querySelector('#c' + i + '-' + j);
             if (cell) {
-                cell.innerHTML = ''; // Удаляем все содержимое, включая картинки
+                cell.innerHTML = ''; 
             }
         }
     }
 
     moveSnake();
     foodPartToPush = currentFoodType
-    // Проверяем, находится ли голова змейки в позиции еды
     if (a1[0] === fr && a2[0] === fc) {
-        currentScore++;
-
-        // Удаляем класс 'food' из ячейки, где была еда
+        defaultScore++;
         let eatenFoodCell = document.querySelector('#c' + fr + '-' + fc);
         if (eatenFoodCell) {
             eatenFoodCell.classList.remove('food');
             eatenFoodCell.classList.add('cell');
-            eatenFoodCell.innerHTML = ''; // Удаляем изображение еды
+            eatenFoodCell.innerHTML = ''; 
         }
     
         placeFood();
-        document.querySelector('.current-score').innerHTML = currentScore;
+        document.querySelector('.current-score').innerHTML = defaultScore;
         addTail();
     }
 
     if (a1[0] === fr && a2[0] === fc) {
-        currentScore++;
+        defaultScore++;
         placeFood();
-        document.querySelector('.current-score').innerHTML = currentScore;
+        document.querySelector('.current-score').innerHTML = defaultScore;
         addTail();
     }
-
-    // Перерисовываем змейку, используя только SVG-картинки
     renderSnake();
 
     checkCollision();
 
-    // Устанавливаем изображение еды
     let foodCell = document.querySelector('#c' + fr + '-' + fc);
     if (foodCell) {
-        foodCell.innerHTML = ''; // Очищаем ячейку перед добавлением новой еды
+        foodCell.innerHTML = ''; 
         let foodImg = document.createElement('img');
         foodImg.src = currentFoodType;
         foodImg.classList.add('food');
@@ -343,89 +325,220 @@ var func = setInterval(() => {
 
 }, 200);
 
-
-
 function gameOver() {
     let container = document.querySelector('.container');
     if (container) {
         container.style.display = "none";
     } else {
         console.error("Container not found!");
+        window.parent.postMessage(
+            JSON.stringify({
+                type: "error",
+                data: {
+                    reason: "Элемент не найден",
+                    level: "error"
+                }
+            }),
+            "*"
+        );
     }
-    
+
     let div = document.querySelector('.game-over');
     if (div) {
         div.style.display = "block";
-        // Обновление финального счёта
-        document.querySelector('.final-score').innerText = currentScore;
+        document.querySelector('.final-score').innerText = defaultScore;
     } else {
         console.error("Game Over element not found!");
+        window.parent.postMessage(
+            JSON.stringify({
+                type: "error",
+                data: {
+                    reason: "Элемент не найден в исходном коде",
+                    level: "error"
+                }
+            }),
+            "*"
+        );
     }
 
-    // Проверяем, если текущий счёт больше высокого, обновляем его
-    if(currentScore > highScore) {
-        document.querySelector('.high-score').innerHTML = currentScore;
-        localStorage.setItem('snake-high-score', currentScore);
+    if ((defaultScore > highScore) && (defaultScore > currentScore)) {
+        document.querySelector('.high-score').innerHTML = defaultScore;
+        localStorage.setItem('snake-high-score', defaultScore);
     }
 
+    try {
+        updatePostScore(defaultScore);
+    } catch (error) {
+        console.error("Ошибка при обновлении счёта:", error);
+        window.parent.postMessage(
+            JSON.stringify({
+                type: "error",
+                data: {
+                    reason: "Ошибка при обновлении счёта",
+                    level: "critical"
+                }
+            }),
+            "*"
+        );
+    }
 }
 
 
-function showMenu() {
+
+function updatePostScore(score) {
+    if (!updateScoreUrl) {
+        console.error("URL для обновления счёта не установлен!");
+        return;
+    }
+
+    const body = `score=${score}`;
+    fetch(updateScoreUrl, {
+        method: "POST",
+        body: body,
+        headers: new Headers([
+            ["Content-Type", "application/x-www-form-urlencoded"],
+            ["Content-Length", "" + body.length]
+        ])
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === "success") {
+            console.log("Счёт успешно обновлён.");
+        } else {
+            console.error("Ошибка при обновлении счёта:", data);
+        }
+    })
+    .catch(error => {
+        console.error("Ошибка при отправке запроса:", error);
+    });
+}
+
+window.showMenu = function () {
     document.querySelector('.main-menu').classList.remove('hidden');
     document.querySelector('.hello-text').classList.remove('hidden');
-    // document?.getElementById('successMessage').classList.remove('hidden');
     document.querySelector('.rules').classList.add('hidden');
     document.querySelector('.leaderboard').classList.add('hidden');
     document.querySelector('.registration').classList.add('hidden');
 }
 
-function showRules() {
+window.showRules = function () {
     document.querySelector('.main-menu').classList.add('hidden');
     document.querySelector('.hello-text').classList.add('hidden');
-    // document?.getElementById('successMessage').classList.add('hidden');
     document.querySelector('.rules').classList.remove('hidden');
 }
 
-function showLeaderboard() {
-    console.log("Showing leaderboard...");
-    
+window.showLeaderboard = function () {
     document.querySelector('.main-menu').classList.add('hidden');
     document.querySelector('.hello-text').classList.add('hidden');
-    // document?.getElementById('successMessage').classList.add('hidden');
     document.querySelector('.leaderboard').classList.remove('hidden');
-    
-    const leaderboardData = JSON.parse(localStorage.getItem('leaderboard')) || [];
+
     const leaderboardTable = document.querySelector('.leaderboard-table');
+    leaderboardTable.innerHTML = ''; 
 
-    leaderboardTable.innerHTML = '';
-    
-    leaderboardData.forEach((entry, index) => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <div class="yellow-tab">${index + 1} место</div>
-            <div class="leaderboard-score">
-            <span>${entry.nickname}</span>
-            <span>${entry.score}</span>
-            </div>
-        `;
-        leaderboardTable.appendChild(row);
-    });
+    if (!leaderBoardUrl) {
+        console.error("URL для получения таблицы лидеров не установлен!");
+        window.parent.postMessage(
+            JSON.stringify({
+                type: "error",
+                data: {
+                    reason: "URL для получения таблицы лидеров не установлен",
+                    level: "critical"
+                }
+            }),
+            "*"
+        );
+        return;
+    }
 
-    console.log("Leaderboard shown.");
-}
+    fetch(leaderBoardUrl)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Ошибка HTTP: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (!data.top || !data.userBoundary) {
+                throw new Error("Неверный формат ответа от сервера");
+            }
+
+            const topSection = document.createElement('div');
+            topSection.classList.add('leaderboard-top');
+            topSection.innerHTML = '<h2>Топ участников</h2>';
+
+            data.top.forEach(entry => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <div class="yellow-tab">${entry.place} место</div>
+                    <div class="leaderboard-score">
+                        <span>${entry.email}</span>
+                        <span>${entry.score}</span>
+                    </div>
+                `;
+                topSection.appendChild(row);
+            });
+
+            leaderboardTable.appendChild(topSection);
+
+            const userBoundarySection = document.createElement('div');
+            userBoundarySection.classList.add('leaderboard-user-boundary');
+            userBoundarySection.innerHTML = '<h2>. . .</h2>';
+
+            data.userBoundary.forEach(entry => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <div class="yellow-tab">${entry.place} место</div>
+                    <div class="leaderboard-score">
+                        <span>${entry.email}</span>
+                        <span>${entry.score}</span>
+                    </div>
+                `;
+                userBoundarySection.appendChild(row);
+            });
+
+            leaderboardTable.appendChild(userBoundarySection);
+
+            console.log("Leaderboard shown.");
+        })
+        .catch(error => {
+            console.error("Ошибка при получении таблицы лидеров:", error);
+            window.parent.postMessage(
+                JSON.stringify({
+                    type: "error",
+                    data: {
+                        reason: error.message,
+                        level: "critical"
+                    }
+                }),
+                "*"
+            );
+        });
+};
 
 
 
-function startGame() {
+window.startGame = function () {
     document.querySelector('.main-menu').classList.add('hidden');
     document.querySelector('.rules').classList.add('hidden');
     document.querySelector('.leaderboard').classList.add('hidden');
     document.querySelector('.registration').classList.add('hidden');
     document.querySelector('.hello-text').classList.add('hidden');
-    // document?.getElementById('successMessage').classList.add('hidden');
     document?.querySelector('.container').classList.remove('hidden');  
     document.querySelector('.footer').classList.remove('hidden');  
     document.querySelector('.score').classList.remove('hidden');  
     createContainer();
 }
+
+window.addEventListener("message", receiveMessage, false);
+
+function receiveMessage(event) {
+    const data = event.data;
+    console.log(data)
+    userId = data.userId     
+    email = data.email         
+    currentScore = data.currentScore || 0
+    updateScoreUrl = data.updateScoreUrl
+    leaderBoardUrl = data.leaderBoardUrl
+}
+
+})();
