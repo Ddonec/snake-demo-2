@@ -5,8 +5,8 @@ if(!localStorage.getItem('snake-high-score'))
 var row = 18;  // Высота поля
 var col = 10;  // Ширина поля
 
-var a1 = [Math.floor(row / 2), Math.floor(row / 2), Math.floor(row / 2)];  // Начальная позиция змейки по строкам
-var a2 = [Math.floor(col / 2), Math.floor(col / 2) - 1, Math.floor(col / 2) - 2];  // Начальная позиция змейки по столбцам
+var a1 = [Math.floor(row / 2), Math.floor(row / 2), Math.floor(row / 2)];  
+var a2 = [Math.floor(col / 2), Math.floor(col / 2) - 1, Math.floor(col / 2) - 2]; 
 
 var fr,fc,flag=0,highScore=parseInt(localStorage.getItem('snake-high-score')),defaultScore = 0;
 var direction = 'right';
@@ -56,12 +56,11 @@ function placeFood() {
 
     let foodCell = document.querySelector('#c' + fr + '-' + fc);
     if (foodCell) {
-        // Случайный выбор еды
         currentFoodType = getRandomElement(bodyImages);
         while (foodCell.firstChild) {
             foodCell.removeChild(foodCell.firstChild);
         }
-        foodCell.innerHTML = ''; // Очищаем ячейку перед добавлением новой еды
+        foodCell.innerHTML = ''; 
         let foodImg = document.createElement('img');
         foodImg.src = currentFoodType;
         foodImg.classList.add('food');
@@ -94,18 +93,18 @@ function renderSnake() {
         let cell = document.querySelector(`#c${a1[i]}-${a2[i]}`);
         
         if (cell) {
-            cell.innerHTML = ''; // Очищаем содержимое ячейки
+            cell.innerHTML = ''; 
 
             let img = document.createElement('img');
             img.classList.add('snake-part');
 
-            if (i === 0) { // Голова змейки
+            if (i === 0) { 
                 img.src = 'assets/snake/snakefront.svg';
                 img.classList.add(getRotationClass(direction));
-            } else if (i === a1.length - 1) { // Хвост змейки
+            } else if (i === a1.length - 1) { 
                 img.src = 'assets/snake/snakeback.svg';
                 img.classList.add(getRotationClass(getTailDirection()));
-            } else { // Части тела змейки с фиксацией случайных элементов
+            } else { 
                 img.src = snakeBodyParts[i - 1];
             }
 
@@ -186,16 +185,13 @@ document.onkeydown = (event) => {
     }
 }
 
-// Переменные для хранения координат касания
 let startTouchX, startTouchY, endTouchX, endTouchY;
 
-// Обработчик для фиксации начала свайпа
 document.addEventListener("touchstart", (event) => {
     startTouchX = event.touches[0].clientX;
     startTouchY = event.touches[0].clientY;
 }, false);
 
-// Обработчик для фиксации конца свайпа и определения направления
 document.addEventListener("touchend", (event) => {
     endTouchX = event.changedTouches[0].clientX;
     endTouchY = event.changedTouches[0].clientY;
@@ -208,11 +204,8 @@ function handleSwipe() {
 
     const diffX = Math.abs(endTouchX - startTouchX);
     const diffY = Math.abs(endTouchY - startTouchY);
-
-    // Проверяем текущее направление змейки
     const actualDirection = direction;
 
-    // Логика смены направления на основании свайпа
     if (endTouchX < startTouchX && actualDirection !== 'right' && diffX > diffY) {
         direction = 'left';
     } else if (endTouchX > startTouchX && actualDirection !== 'left' && diffX > diffY) {
@@ -343,13 +336,11 @@ function gameOver() {
     let div = document.querySelector('.game-over');
     if (div) {
         div.style.display = "block";
-        // Обновление финального счёта
         document.querySelector('.final-score').innerText = defaultScore;
     } else {
         console.error("Game Over element not found!");
     }
 
-    // Проверяем, если текущий счёт больше высокого, обновляем его
     if((defaultScore > highScore) && (defaultScore > currentScore)) {
         document.querySelector('.high-score').innerHTML = defaultScore ;
         localStorage.setItem('snake-high-score', defaultScore);
@@ -357,11 +348,33 @@ function gameOver() {
     updatePostScore(defaultScore)
 }
 
-function updatePostScore(score){
-    const body = `score=${score}`
-    fetch(updateScoreUrl,{  method: "POST",
-        body: body, headers: new Headers([["Content-Type", "application/x-www-form-urlencoded"], ["Content-Length", ""+body.length]])
+
+function updatePostScore(score) {
+    if (!updateScoreUrl) {
+        console.error("URL для обновления счёта не установлен!");
+        return;
+    }
+
+    const body = `score=${score}`;
+    fetch(updateScoreUrl, {
+        method: "POST",
+        body: body,
+        headers: new Headers([
+            ["Content-Type", "application/x-www-form-urlencoded"],
+            ["Content-Length", "" + body.length]
+        ])
     })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === "success") {
+            console.log("Счёт успешно обновлён.");
+        } else {
+            console.error("Ошибка при обновлении счёта:", data);
+        }
+    })
+    .catch(error => {
+        console.error("Ошибка при отправке запроса:", error);
+    });
 }
 
 window.showMenu = function () {
