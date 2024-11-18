@@ -433,7 +433,7 @@ window.showLeaderboard = function () {
     document.querySelector('.leaderboard').classList.remove('hidden');
 
     const leaderboardTable = document.querySelector('.leaderboard-table');
-    leaderboardTable.innerHTML = ''; 
+    leaderboardTable.innerHTML = '';
 
     if (!leaderBoardUrl) {
         console.error("URL для получения таблицы лидеров не установлен!");
@@ -458,45 +458,53 @@ window.showLeaderboard = function () {
             return response.json();
         })
         .then(data => {
-            if (!data.top || !data.userBoundary) {
-                throw new Error("Неверный формат ответа от сервера");
+            // Отрисовка секции "Топ участников"
+            if (data.top && Array.isArray(data.top)) {
+                const topSection = document.createElement('div');
+                topSection.classList.add('leaderboard-top');
+                topSection.innerHTML = '<h2>Топ участников</h2>';
+
+                data.top.forEach(entry => {
+                    const row = document.createElement('div');
+                    row.classList.add('leaderboard-row');
+                    row.innerHTML = `
+                        <div class="yellow-tab">${entry.place} место</div>
+                        <div class="leaderboard-score">
+                            <span>${entry.email}</span>
+                            <span>${entry.score}</span>
+                        </div>
+                    `;
+                    topSection.appendChild(row);
+                });
+
+                leaderboardTable.appendChild(topSection);
+            } else {
+                console.warn("Раздел 'top' отсутствует или имеет неверный формат.");
             }
 
-            const topSection = document.createElement('div');
-            topSection.classList.add('leaderboard-top');
-            topSection.innerHTML = '<h2>Топ участников</h2>';
+            // Отрисовка секции "Окрестности пользователя"
+            if (data.userBoundary && Array.isArray(data.userBoundary)) {
+                const userBoundarySection = document.createElement('div');
+                userBoundarySection.classList.add('leaderboard-user-boundary');
+                userBoundarySection.innerHTML = '<h2>. . .</h2>';
 
-            data.top.forEach(entry => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <div class="yellow-tab">${entry.place} место</div>
-                    <div class="leaderboard-score">
-                        <span>${entry.email}</span>
-                        <span>${entry.score}</span>
-                    </div>
-                `;
-                topSection.appendChild(row);
-            });
+                data.userBoundary.forEach(entry => {
+                    const row = document.createElement('div');
+                    row.classList.add('leaderboard-row');
+                    row.innerHTML = `
+                        <div class="yellow-tab">${entry.place} место</div>
+                        <div class="leaderboard-score">
+                            <span>${entry.email}</span>
+                            <span>${entry.score}</span>
+                        </div>
+                    `;
+                    userBoundarySection.appendChild(row);
+                });
 
-            leaderboardTable.appendChild(topSection);
-
-            const userBoundarySection = document.createElement('div');
-            userBoundarySection.classList.add('leaderboard-user-boundary');
-            userBoundarySection.innerHTML = '<h2>. . .</h2>';
-
-            data.userBoundary.forEach(entry => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <div class="yellow-tab">${entry.place} место</div>
-                    <div class="leaderboard-score">
-                        <span>${entry.email}</span>
-                        <span>${entry.score}</span>
-                    </div>
-                `;
-                userBoundarySection.appendChild(row);
-            });
-
-            leaderboardTable.appendChild(userBoundarySection);
+                leaderboardTable.appendChild(userBoundarySection);
+            } else {
+                console.warn("Раздел 'userBoundary' отсутствует или имеет неверный формат.");
+            }
 
             console.log("Leaderboard shown.");
         })
@@ -514,6 +522,7 @@ window.showLeaderboard = function () {
             );
         });
 };
+
 
 
 
