@@ -553,6 +553,10 @@ function receiveMessage(event) {
             leaderBoardUrl = payload.leaderBoardUrl;
 
             console.log("URL для обновления счёта:", updateScoreUrl);
+
+            if (!payload.currentScore) {
+                modal.classList.remove('hidden');
+            }
         } else {
             console.warn("Payload не найден:", data);
         }
@@ -560,9 +564,6 @@ function receiveMessage(event) {
         console.error("Ошибка при обработке сообщения:", error);
     }
     console.log(currentScore)
-    if (!currentScore) {
-        modal.classList.remove('hidden')
-    }
 }
 function requestResults() {
     window.parent.postMessage(
