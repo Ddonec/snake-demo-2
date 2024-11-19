@@ -295,7 +295,7 @@ function gameLoop(){
     moveSnake();
     foodPartToPush = currentFoodType
     if (a1[0] === fr && a2[0] === fc) {
-        defaultScore++;
+        defaultScore+=10;
         let eatenFoodCell = document.querySelector('#c' + fr + '-' + fc);
         if (eatenFoodCell) {
             eatenFoodCell.classList.remove('food');
@@ -309,7 +309,7 @@ function gameLoop(){
     }
 
     if (a1[0] === fr && a2[0] === fc) {
-        defaultScore++;
+        defaultScore+=10;
         placeFood();
         document.querySelector('.current-score').innerHTML = defaultScore;
         addTail();
@@ -387,6 +387,8 @@ function gameOver() {
             "*"
         );
     }
+    document?.querySelector('.score').classList.add('hidden');  
+
 }
 
 window.resetGame = function resetGame() {
