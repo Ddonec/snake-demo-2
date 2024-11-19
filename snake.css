@@ -141,6 +141,9 @@ body {
   margin: 0 auto;
   color: #fff;
 }
+.hello-text {
+  margin-bottom: 5vh;
+}
 .rules-title {
   text-align: center;
   color: #feed00;
