@@ -29,14 +29,18 @@
     function frameOnload(f) {
       const win = f.contentWindow;
       setTimeout(() => {
-        console.log(win);
-        win.postMessage({
-          userId: "74837",
-          email: "test@gmail.com",
-          currentScore: 10,
-          updateScoreUrl: "./score.json",
-          leaderBoardUrl: "./leaderboard.json",
-        });
+        console.log("Отправка сообщения в iframe...");
+        const message = {
+          type: "resultResponse",
+          payload: {
+            userId: "74837",
+            email: "test@gmail.com",
+            currentScore: 1,
+            updateScoreUrl: "./score.json",
+            leaderBoardUrl: "./leaderboard.json",
+          },
+        };
+        win.postMessage(message, "*");
       }, 1000);
     }
   </script>

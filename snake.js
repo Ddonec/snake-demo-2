@@ -1,5 +1,3 @@
-if(!localStorage.getItem('snake-high-score'))
-    localStorage.setItem('snake-high-score','0');
 (function(){
 
 var row = 18;  // Высота поля
@@ -8,7 +6,7 @@ var col = 10;  // Ширина поля
 var a1 = [Math.floor(row / 2), Math.floor(row / 2), Math.floor(row / 2)];  
 var a2 = [Math.floor(col / 2), Math.floor(col / 2) - 1, Math.floor(col / 2) - 2]; 
 
-var fr,fc,flag=0,highScore=parseInt(localStorage.getItem('snake-high-score')),defaultScore = 0;
+var fr,fc,flag=0,defaultScore = 0;
 var direction = 'right';
 
 var userId;              // Идентификатор пользователя на БП
@@ -32,6 +30,11 @@ const bodyImages = [
 let snakeBodyParts = ["assets/snake/snakebody1.svg"];
 let foodPartToPush;
 let currentFoodType;
+let container = document.querySelector('.container');
+let divGO = document.querySelector('.game-over');
+let func 
+
+const loadingIndicator = document.querySelector('.loading-indicator');
 
 function getRandomElement(array) {
     const randomIndex = Math.floor(Math.random() * array.length);
@@ -70,9 +73,9 @@ function placeFood() {
 
 function createContainer() {
     document.querySelector('.current-score').innerHTML = defaultScore;
-    document.querySelector('.high-score').innerHTML = (currentScore > highScore) ? currentScore : highScore;
+    document.querySelector('.high-score').innerHTML = currentScore || 0;
 
-    let container = document.querySelector('.container');
+
     container.innerHTML = '';
 
     for (let i = 0; i < row; i++) {
@@ -276,7 +279,8 @@ function checkCollision()
     }
 }
 
-var func = setInterval(() => {
+
+function gameLoop(){
     flag = 1;
 
     for (let i = 0; i < row; i++) {
@@ -322,13 +326,11 @@ var func = setInterval(() => {
         foodImg.classList.add('food');
         foodCell.appendChild(foodImg);
     }
-
-}, 200);
+}
 
 function gameOver() {
-    let container = document.querySelector('.container');
     if (container) {
-        container.style.display = "none";
+        container.classList.add("hidden");
     } else {
         console.error("Container not found!");
         window.parent.postMessage(
@@ -343,9 +345,8 @@ function gameOver() {
         );
     }
 
-    let div = document.querySelector('.game-over');
-    if (div) {
-        div.style.display = "block";
+    if (divGO) {
+        divGO.classList.remove("hidden");
         document.querySelector('.final-score').innerText = defaultScore;
     } else {
         console.error("Game Over element not found!");
@@ -361,26 +362,46 @@ function gameOver() {
         );
     }
 
-    if ((defaultScore > highScore) && (defaultScore > currentScore)) {
-        document.querySelector('.high-score').innerHTML = defaultScore;
-        localStorage.setItem('snake-high-score', defaultScore);
-    }
 
     try {
-        updatePostScore(defaultScore);
+        window.parent.postMessage(
+            JSON.stringify({
+                type: "gameComplete",
+                data: {
+                    score: defaultScore
+                }
+            }),
+            "*"
+        );
+        console.log("Счет отправлен")
     } catch (error) {
-        console.error("Ошибка при обновлении счёта:", error);
+        console.error("Ошибка при отправке результата игры:", error);
         window.parent.postMessage(
             JSON.stringify({
                 type: "error",
                 data: {
-                    reason: "Ошибка при обновлении счёта",
+                    reason: "Ошибка при отправке результата игры",
                     level: "critical"
                 }
             }),
             "*"
         );
     }
+}
+
+window.resetGame = function resetGame() {
+    a1 = [Math.floor(row / 2), Math.floor(row / 2), Math.floor(row / 2)];
+    a2 = [Math.floor(col / 2), Math.floor(col / 2) - 1, Math.floor(col / 2) - 2];
+    direction = 'right';
+    defaultScore = 0;
+    snakeBodyParts = ["assets/snake/snakebody1.svg"];
+    defaultScore = 0;
+    container.innerHTML = '';
+    divGO.classList.add("hidden");
+
+    clearInterval(func);
+    func = null
+    showMenu();
 }
 
 
@@ -413,11 +434,15 @@ function updatePostScore(score) {
     });
 }
 
-window.showMenu = function () {
+window.showMenu = function showMenu() {
     document.querySelector('.main-menu').classList.remove('hidden');
     document.querySelector('.hello-text').classList.remove('hidden');
     document.querySelector('.rules').classList.add('hidden');
     document.querySelector('.leaderboard').classList.add('hidden');
+    loadingIndicator.classList.add('hidden');
+    document?.querySelector('.container').classList.add('hidden');  
+    document?.querySelector('.score').classList.add('hidden');  
+    document?.querySelector('.play-again').classList.add('hidden');  
 }
 
 window.showRules = function () {
@@ -434,95 +459,87 @@ window.showLeaderboard = function () {
     const leaderboardTable = document.querySelector('.leaderboard-table');
     leaderboardTable.innerHTML = '';
 
-    if (!leaderBoardUrl) {
-        console.error("URL для получения таблицы лидеров не установлен!");
+    loadingIndicator.classList.remove('hidden');
+
+    try {
+        window.parent.postMessage(
+            JSON.stringify({
+                type: "resultsRequest"
+            }),
+            "*"
+        );
+
+        window.addEventListener("message", function handleLeaderboardResponse(event) {
+            try {
+                const message = typeof event.data === "string" ? JSON.parse(event.data) : event.data;
+
+                if (message.type === "resultResponse" && message.data) {
+                    loadingIndicator.classList.add('hidden');
+
+                    const { top, userBoundary } = message.data;
+
+                    if (Array.isArray(top)) {
+                        const topSection = document.createElement('div');
+                        topSection.classList.add('leaderboard-top');
+                        topSection.innerHTML = '<h2>Топ участников</h2>';
+
+                        top.forEach(entry => {
+                            const row = document.createElement('div');
+                            row.classList.add('leaderboard-row');
+                            row.innerHTML = `
+                                <div class="yellow-tab">${entry.place} место</div>
+                                <div class="leaderboard-score">
+                                    <span>${entry.email}</span>
+                                    <span>${entry.score}</span>
+                                </div>
+                            `;
+                            topSection.appendChild(row);
+                        });
+
+                        leaderboardTable.appendChild(topSection);
+                    }
+
+                    if (Array.isArray(userBoundary)) {
+                        const userBoundarySection = document.createElement('div');
+                        userBoundarySection.classList.add('leaderboard-user-boundary');
+                        userBoundary.forEach(entry => {
+                            const row = document.createElement('div');
+                            row.classList.add('leaderboard-row');
+                            row.innerHTML = `
+                                <div class="yellow-tab">${entry.place} место</div>
+                                <div class="leaderboard-score">
+                                    <span>${entry.email}</span>
+                                    <span>${entry.score}</span>
+                                </div>
+                            `;
+                            userBoundarySection.appendChild(row);
+                        });
+
+                        leaderboardTable.appendChild(userBoundarySection);
+                    }
+
+                    window.removeEventListener("message", handleLeaderboardResponse);
+                }
+            } catch (error) {
+                console.error("Ошибка обработки ответа таблицы лидеров:", error);
+                loadingIndicator.classList.add('hidden');
+            }
+        });
+    } catch (error) {
+        console.error("Ошибка при запросе таблицы лидеров:", error);
         window.parent.postMessage(
             JSON.stringify({
                 type: "error",
                 data: {
-                    reason: "URL для получения таблицы лидеров не установлен",
+                    reason: "Ошибка при запросе таблицы лидеров",
                     level: "critical"
                 }
             }),
             "*"
         );
-        return;
+        loadingIndicator.classList.add('hidden');
     }
-
-    fetch(leaderBoardUrl)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`Ошибка HTTP: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            // Отрисовка секции "Топ участников"
-            if (data.top && Array.isArray(data.top)) {
-                const topSection = document.createElement('div');
-                topSection.classList.add('leaderboard-top');
-                topSection.innerHTML = '<h2>Топ участников</h2>';
-
-                data.top.forEach(entry => {
-                    const row = document.createElement('div');
-                    row.classList.add('leaderboard-row');
-                    row.innerHTML = `
-                        <div class="yellow-tab">${entry.place} место</div>
-                        <div class="leaderboard-score">
-                            <span>${entry.email}</span>
-                            <span>${entry.score}</span>
-                        </div>
-                    `;
-                    topSection.appendChild(row);
-                });
-
-                leaderboardTable.appendChild(topSection);
-            } else {
-                console.warn("Раздел 'top' отсутствует или имеет неверный формат.");
-            }
-
-            // Отрисовка секции "Окрестности пользователя"
-            if (data.userBoundary && Array.isArray(data.userBoundary)) {
-                const userBoundarySection = document.createElement('div');
-                userBoundarySection.classList.add('leaderboard-user-boundary');
-                userBoundarySection.innerHTML = '<h2>. . .</h2>';
-
-                data.userBoundary.forEach(entry => {
-                    const row = document.createElement('div');
-                    row.classList.add('leaderboard-row');
-                    row.innerHTML = `
-                        <div class="yellow-tab">${entry.place} место</div>
-                        <div class="leaderboard-score">
-                            <span>${entry.email}</span>
-                            <span>${entry.score}</span>
-                        </div>
-                    `;
-                    userBoundarySection.appendChild(row);
-                });
-
-                leaderboardTable.appendChild(userBoundarySection);
-            } else {
-                console.warn("Раздел 'userBoundary' отсутствует или имеет неверный формат.");
-            }
-
-            console.log("Leaderboard shown.");
-        })
-        .catch(error => {
-            console.error("Ошибка при получении таблицы лидеров:", error);
-            window.parent.postMessage(
-                JSON.stringify({
-                    type: "error",
-                    data: {
-                        reason: error.message,
-                        level: "critical"
-                    }
-                }),
-                "*"
-            );
-        });
 };
-
-
 
 
 window.startGame = function () {
@@ -533,19 +550,36 @@ window.startGame = function () {
     document?.querySelector('.container').classList.remove('hidden');  
     document.querySelector('.footer').classList.remove('hidden');  
     document.querySelector('.score').classList.remove('hidden');  
+    document?.querySelector('.play-again').classList.remove('hidden');  
+
     createContainer();
+    func = setInterval(gameLoop, 200);
 }
 
 window.addEventListener("message", receiveMessage, false);
 
 function receiveMessage(event) {
-    const data = event.data;
-    console.log(data)
-    userId = data.userId     
-    email = data.email         
-    currentScore = data.currentScore || 0
-    updateScoreUrl = data.updateScoreUrl
-    leaderBoardUrl = data.leaderBoardUrl
+    try {
+        const data = typeof event.data === "string" ? JSON.parse(event.data) : event.data;
+        console.log("Получены данные:", data);
+
+        if (data.payload) {
+            const payload = data.payload;
+            userId = payload.userId;
+            email = payload.email;
+            currentScore = payload.currentScore;
+            updateScoreUrl = payload.updateScoreUrl;
+            leaderBoardUrl = payload.leaderBoardUrl;
+
+            console.log("URL для обновления счёта:", updateScoreUrl);
+        } else {
+            console.warn("Payload не найден:", data);
+        }
+    } catch (error) {
+        console.error("Ошибка при обработке сообщения:", error);
+    }
+    console.log(currentScore)
 }
+
 
 })();

@@ -1,5 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Wix+Madefor+Display:wght@400..800&display=swap");
-
+@import url(https://fonts.googleapis.com/css2?family=Wix+Madefor+Display:wght@400..800&display=swap);
 * {
   margin: 0;
   padding: 0;
@@ -10,67 +9,71 @@
   --rows: 18;
   --columns: 10;
 }
+html {
+  overflow: hidden;
+}
 body {
-  background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)),
-    url(./assets/img/game-bg.png);
-  background-size: cover;
-  background-position: center;
+  background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8))
+      center/cover,
+    url(./assets/img/game-bg.png) center/cover;
   height: 100dvh;
   display: flex;
   flex-direction: column;
   gap: 2vh;
   justify-content: center;
-  align-content: center;
+  align-items: center;
   overflow: hidden;
   font-family: "Wix Madefor Display", sans-serif;
 }
-
+.container,
+.footer {
+  justify-content: center;
+}
 .container {
   display: grid;
-  justify-content: center;
   grid-template-columns: repeat(var(--columns), var(--cellWidth));
   grid-template-rows: repeat(var(--rows), var(--cellHeight));
 }
 .cell {
   border-radius: 5%;
   background-color: #3d3d3d;
-  /* border: 0.01px gray solid; */
 }
 .cell img,
-.snake img,
-.food img {
+.food img,
+.snake img {
   width: 30px;
   height: 30px;
 }
 .snake {
   border: 0.5px solid rgba(0, 0, 0, 0.7);
-  border-radius: 0%;
-  background-color: aqua;
+  border-radius: 0;
+  background-color: #0ff;
 }
 .food {
   border-radius: 5%;
-  /* background-color: white; */
 }
 .white {
-  color: white;
+  color: #fff;
 }
 .footer {
   display: flex;
-  justify-content: center;
 }
 .play-again {
   display: flex;
   justify-content: center;
   align-items: center;
-  color: black;
+  color: #000;
   width: 200px;
   height: 50px;
-  background-color: white;
+  background-color: #fff;
+}
+.input-tab,
+.score-div {
+  background-color: #feed00;
 }
 .game-over {
-  display: none;
   text-align: center;
-  color: white;
+  color: #fff;
 }
 .score {
   width: 100vw;
@@ -83,21 +86,15 @@ body {
   align-items: center;
   padding: 10px;
   border-radius: 10px;
-  background-color: #feed00;
-
   font-size: 20px;
 }
 .header {
   margin-bottom: 20px;
 }
-.rules {
-  width: 90vw;
-  margin: 0 auto;
-}
-.main-menu,
-.rules,
 .leaderboard,
-.registration {
+.main-menu,
+.registration,
+.rules {
   display: flex;
   flex-direction: column;
   gap: 2vh;
@@ -110,7 +107,7 @@ body {
   margin: auto;
   border-radius: 5px;
   border: none;
-  color: black;
+  color: #000;
   text-transform: uppercase;
   display: block;
   font-weight: 800;
@@ -134,23 +131,22 @@ body {
 .input-tab {
   padding: 5px 10px;
   border-radius: 10px;
-  background-color: #feed00;
   width: fit-content;
   margin-bottom: 1vh;
 }
-.hello-text,
 #successMessage,
+.hello-text,
 .rules {
   width: 90vw;
   margin: 0 auto;
-  color: white;
+  color: #fff;
 }
 .rules-title {
   text-align: center;
   color: #feed00;
 }
 .rotate-0 {
-  transform: rotate(0deg);
+  transform: rotate(0);
 }
 .rotate-90 {
   transform: rotate(90deg);
@@ -169,7 +165,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  background: white;
+  background: #fff;
   padding: 1vh;
   border-radius: 20px;
 }
@@ -196,6 +192,44 @@ body {
 .rules-list {
   list-style: none;
 }
+.loading-indicator {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 1000;
+}
+
+.loading-indicator.hidden {
+  display: none;
+}
+
+.spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+.button-main,
+.hello-text,
+.rules,
+.leaderboard-table,
+.score {
+  max-width: 500px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 .mt-10 {
   margin-top: 10px;
 }

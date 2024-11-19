@@ -26,7 +26,7 @@
         <div class="high-score"></div>
       </div>
     </div>
-    <div class="game-over" style="display: none">
+    <div class="game-over hidden" >
       <h1>Игра окончена!</h1>
       <p>Ваш счёт: <span class="final-score"></span></p>
     </div>
@@ -51,9 +51,7 @@
       максимально длинную змейку!
     </div>
     <div class="footer hidden">
-      <div class="play-again" onclick="window.location.reload();">
-        Перезапуск
-      </div>
+      <div class="play-again" onclick="resetGame()">Перезапуск</div>
     </div>
     <div class="main-menu">
       <button class="button-main" onclick="showRules()">ПРАВИЛА ИГРЫ</button>
@@ -100,6 +98,9 @@
         </li>
       </ul>
       <button class="button-main" onclick="showMenu()">Назад</button>
+    </div>
+    <div class="loading-indicator hidden">
+      <div class="spinner"></div>
     </div>
   </body>
   <script src="./snake.js"></script>
