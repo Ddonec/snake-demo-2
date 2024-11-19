@@ -373,7 +373,8 @@ function gameOver() {
             }),
             "*"
         );
-        console.log("Счет отправлен")
+        console.log("Счет отправлен " + defaultScore)
+        console.log(currentScore)
     } catch (error) {
         console.error("Ошибка при отправке результата игры:", error);
         window.parent.postMessage(
@@ -404,37 +405,9 @@ window.resetGame = function resetGame() {
     clearInterval(func);
     func = null
     showMenu();
+    requestResults();
 }
 
-
-
-function updatePostScore(score) {
-    if (!updateScoreUrl) {
-        console.error("URL для обновления счёта не установлен!");
-        return;
-    }
-
-    const body = `score=${score}`;
-    fetch(updateScoreUrl, {
-        method: "POST",
-        body: body,
-        headers: new Headers([
-            ["Content-Type", "application/x-www-form-urlencoded"],
-            ["Content-Length", "" + body.length]
-        ])
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === "success") {
-            console.log("Счёт успешно обновлён.");
-        } else {
-            console.error("Ошибка при обновлении счёта:", data);
-        }
-    })
-    .catch(error => {
-        console.error("Ошибка при отправке запроса:", error);
-    });
-}
 
 window.showMenu = function showMenu() {
     document.querySelector('.main-menu').classList.remove('hidden');
@@ -581,6 +554,16 @@ function receiveMessage(event) {
         console.error("Ошибка при обработке сообщения:", error);
     }
     console.log(currentScore)
+}
+function requestResults() {
+    window.parent.postMessage(
+        JSON.stringify({
+            type: "resultsRequest",
+            data: {} 
+        }),
+        "*"
+    );
+    console.log("Запрос на получение результатов отправлен.");
 }
 
 
