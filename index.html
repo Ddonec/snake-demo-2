@@ -105,11 +105,29 @@
         </li>
       </ul>
       <h3 class="rules-title">ЦЕЛЬ ИГРЫ</h3>
-      <p class="rules-subtitle">Набрать самое большое количество баллов и выиграть приз.</p>
+      <p class="rules-subtitle">
+        Набрать самое большое количество баллов и выиграть приз.
+      </p>
       <button class="button-main" onclick="showMenu()">Назад</button>
     </div>
     <div class="loading-indicator hidden">
       <div class="spinner"></div>
+    </div>
+    <div class="modal hidden">
+      <div class="absolut-modal">
+        <div class="logo-box">
+          <img src="./assets/logo/iek-logo.png" alt="" />
+          <img src="./assets//logo/FP-logo.png" alt="" />
+        </div>
+        <p class="hello-text absolut">ВНЕ РАМОК</p>
+        <div class="absolut-flex">
+          <img class="snake-logo" src="./assets/logo/snake-logo.png" alt="" />
+          <div class="btns-absolute">
+            <button class="button-main y-btn">Сыграем в Змейку?</button>
+            <button class="button-main" onclick="closeModal()">дальше</button>
+          </div>
+        </div>
+      </div>
     </div>
   </body>
   <script src="./snake.js"></script>

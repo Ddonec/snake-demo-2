@@ -34,7 +34,13 @@ let container = document.querySelector('.container');
 let divGO = document.querySelector('.game-over');
 let func 
 
+
+const modal = document.querySelector('.modal')
 const loadingIndicator = document.querySelector('.loading-indicator');
+
+window.closeModal = function closeModal(){
+    modal.classList.add('hidden')
+}
 
 function getRandomElement(array) {
     const randomIndex = Math.floor(Math.random() * array.length);
@@ -554,6 +560,9 @@ function receiveMessage(event) {
         console.error("Ошибка при обработке сообщения:", error);
     }
     console.log(currentScore)
+    if (!currentScore) {
+        modal.classList.remove('hidden')
+    }
 }
 function requestResults() {
     window.parent.postMessage(
