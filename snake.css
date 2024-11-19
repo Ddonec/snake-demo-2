@@ -145,6 +145,9 @@ body {
   text-align: center;
   color: #feed00;
 }
+.rules-subtitle {
+  text-align: center;
+}
 .rotate-0 {
   transform: rotate(0);
 }
@@ -191,6 +194,16 @@ body {
 }
 .rules-list {
   list-style: none;
+}
+.rules-list li {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin: 10px auto;
+}
+.rules-list img {
+  width: 30px;
+  aspect-ratio: 1;
 }
 .loading-indicator {
   position: absolute;
