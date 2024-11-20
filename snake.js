@@ -195,17 +195,45 @@ document.onkeydown = (event) => {
 }
 
 let startTouchX, startTouchY, endTouchX, endTouchY;
+let isSwipeActive = false;
+
+// Список интерактивных элементов, которые не должны блокироваться
+const INTERACTIVE_TAGS = ['BUTTON', 'A', 'INPUT', 'TEXTAREA', 'SELECT'];
 
 document.addEventListener("touchstart", (event) => {
-    startTouchX = event.touches[0].clientX;
-    startTouchY = event.touches[0].clientY;
-}, false);
+    // Проверяем, если свайп начинается внутри элемента с классом .leaderboard-table
+    const isInsideScrollableElement = event.target.closest('.leaderboard-table');
+    const isInteractiveElement = INTERACTIVE_TAGS.includes(event.target.tagName);
+
+    if (!isInsideScrollableElement && !isInteractiveElement) {
+        startTouchX = event.touches[0].clientX;
+        startTouchY = event.touches[0].clientY;
+        isSwipeActive = true;
+        event.preventDefault(); // Блокируем стандартное поведение вне скролл-области и интерактивных элементов
+    }
+}, { passive: false });
+
+document.addEventListener("touchmove", (event) => {
+    const isInsideScrollableElement = event.target.closest('.leaderboard-table');
+    const isInteractiveElement = INTERACTIVE_TAGS.includes(event.target.tagName);
+
+    if (!isInsideScrollableElement && !isInteractiveElement && isSwipeActive) {
+        event.preventDefault(); // Блокируем прокрутку только вне скролл-области и интерактивных элементов
+    }
+}, { passive: false });
 
 document.addEventListener("touchend", (event) => {
-    endTouchX = event.changedTouches[0].clientX;
-    endTouchY = event.changedTouches[0].clientY;
-    handleSwipe();
-}, false);
+    const isInsideScrollableElement = event.target.closest('.leaderboard-table');
+    const isInteractiveElement = INTERACTIVE_TAGS.includes(event.target.tagName);
+
+    if (!isInsideScrollableElement && !isInteractiveElement) {
+        endTouchX = event.changedTouches[0].clientX;
+        endTouchY = event.changedTouches[0].clientY;
+        isSwipeActive = false;
+        handleSwipe();
+        event.preventDefault(); // Блокируем стандартное поведение на завершение свайпа
+    }
+}, { passive: false });
 
 function handleSwipe() {
     if (!flag) return;
@@ -225,6 +253,7 @@ function handleSwipe() {
         direction = 'down';
     }
 }
+
 
 function moveSnake() {
     for (let i = a1.length - 1; i > 0; i--) {
