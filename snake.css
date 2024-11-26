@@ -302,6 +302,12 @@ body {
 }
 
 @media (min-width: 1000px) {
+  button {
+    cursor: pointer;
+  }
+  button:hover {
+    border: #feed00 solid 3px;
+  }
   .main-menu {
     flex-direction: row;
   }
