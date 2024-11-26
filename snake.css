@@ -276,6 +276,9 @@ body {
   flex-direction: column;
   gap: 2vh;
 }
+.logo-cantainer-desctop {
+  display: none;
+}
 @media (max-width: 500px) {
   .logo-box {
     margin-left: 5vw;
@@ -324,14 +327,75 @@ body {
   .rules-subtitle {
     font-size: 24px;
   }
+  .leaderboard-table {
+    height: 50vh;
+  }
+  .leaderboard {
+    margin-top: 20vh;
+  }
+  .leaderboard h2 {
+    font-size: 30px;
+    color: #feed00;
+    text-transform: uppercase;
+  }
   .rules {
     max-width: 60vw;
+    margin-top: 15vh;
   }
   .rules > .button-main {
     width: 25vw;
   }
-  .rules-title{
+  .rules-title {
     font-size: 30px;
+  }
+  .play-again {
+    font-size: 24px;
+    font-weight: 900;
+  }
+  .score {
+    position: absolute;
+    flex-direction: column;
+    align-items: flex-start;
+    left: 20%;
+    gap: 2vh;
+    top: 25%;
+  }
+  .container {
+    position: absolute;
+    top: 25%;
+  }
+  .footer {
+    position: absolute;
+    top: calc(27% + 540px);
+  }
+  .logo-cantainer-desctop {
+    display: block;
+    position: absolute;
+    width: 100vw;
+    top: 10%;
+  }
+  .logo-cantainer-desctop__box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    padding: 0 7vw;
+  }
+  .logo-cantainer-desctop__box img {
+    height: 7vh;
+  }
+  .logo-cantainer-desctop__left {
+  }
+  .logo-cantainer-desctop__right {
+    margin-right: -20vw;
+    position: relative;
+  }
+  .logo-cantainer-desctop__text {
+    color: #fff;
+    font-size: 24px;
+    position: absolute;
+    left: 30%;
+    transform: translateX(-50%);
   }
 }
 
